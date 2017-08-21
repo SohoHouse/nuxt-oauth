@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "build": "rollup -c"
   },
   "dependencies": {
     "Base64": "^1.0.1",
@@ -33,11 +34,14 @@
     "eslint-plugin-promise": "^3.5.0",
     "flow-bin": "^0.53.1",
     "jest": "^20.0.4",
-    "jest-babel": "^1.0.1"
+    "jest-babel": "^1.0.1",
+    "rollup": "^0.48.2",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-json": "^2.3.0"
   },
   "babel": {
     "presets": [
-      "env",
+      ["env", { "modules": false }],
       "flow"
     ],
     "plugins": [

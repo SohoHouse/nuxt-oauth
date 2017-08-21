@@ -3,7 +3,7 @@
 export default function (moduleOptions: {}) {
   const options = { ...this.options.oauth, moduleOptions }
 
-  return options
+  console.log(this.options)
 }
 
-module.exports.meta = require('../package.json')
+module.exports.meta = require('./package.json')

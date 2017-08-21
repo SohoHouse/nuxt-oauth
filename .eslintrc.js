@@ -35,7 +35,7 @@ module.exports = {
     'promise/prefer-await-to-then': 'error',
     'promise/prefer-await-to-callbacks': 'error',
     'import/no-dynamic-require': 'off',
-    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['test/**/*'] }]
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['test/**/*', 'rollup.config.js'] }]
   },
   globals: {}
 }
