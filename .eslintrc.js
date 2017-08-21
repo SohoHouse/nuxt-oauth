@@ -8,18 +8,19 @@ module.exports = {
   },
   extends: [
     'airbnb/base',
-    "plugin:promise/recommended"
-    // 'plugin:vue/recommended'
+    'plugin:promise/recommended',
   ],
   // required to lint *.vue files
   plugins: [
     'jest',
     'import',
     'node',
-    'promise'
+    'promise',
+    'flowtype-errors'
   ],
   // add your custom rules here
   rules: {
+    'flowtype-errors/show-errors': 2,
     'comma-dangle': ['error', 'never'],
     'space-before-function-paren': ['error', 'always'],
     'semi': ['error', 'never'],
@@ -34,7 +35,7 @@ module.exports = {
     'promise/prefer-await-to-then': 'error',
     'promise/prefer-await-to-callbacks': 'error',
     'import/no-dynamic-require': 'off',
-    'import/no-extraneous-dependencies': ["error", { "devDependencies": ['test/**/*'] }]
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['test/**/*'] }]
   },
   globals: {}
 }

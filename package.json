@@ -17,25 +17,32 @@
     "client-sessions": "^0.8.0"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
-    "babel-eslint": "^7.2.3",
+    "babel-preset-flow": "^6.23.0",
     "eslint": "^4.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-import-resolver-jest": "^1.0.0",
+    "eslint-plugin-flowtype-errors": "^3.3.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jest": "^20.0.3",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
+    "flow-bin": "^0.53.1",
     "jest": "^20.0.4",
     "jest-babel": "^1.0.1"
   },
   "babel": {
     "presets": [
-      "env"
+      "env",
+      "flow"
     ],
     "plugins": [
-      "transform-object-rest-spread"
+      "transform-object-rest-spread",
+      "transform-class-properties"
     ]
   }
 }
