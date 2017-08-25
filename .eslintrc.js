@@ -15,12 +15,10 @@ module.exports = {
     'jest',
     'import',
     'node',
-    'promise',
-    'flowtype-errors'
+    'promise'
   ],
   // add your custom rules here
   rules: {
-    'flowtype-errors/show-errors': 2,
     'comma-dangle': ['error', 'never'],
     'space-before-function-paren': ['error', 'always'],
     'semi': ['error', 'never'],

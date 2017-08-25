@@ -8,45 +8,39 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "lint": "eslint --ignore-path .gitignore .",
-    "build": "rollup -c"
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
     "Base64": "^1.0.1",
     "axios": "^0.16.2",
+    "babel-plugin-external-helpers": "^6.22.0",
     "client-oauth2": "^4.1.0",
-    "client-sessions": "^0.8.0"
+    "client-sessions": "^0.8.0",
+    "qs": "^6.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-flow": "^6.23.0",
     "eslint": "^4.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-import-resolver-jest": "^1.0.0",
-    "eslint-plugin-flowtype-errors": "^3.3.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jest": "^20.0.3",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
-    "flow-bin": "^0.53.1",
     "jest": "^20.0.4",
-    "jest-babel": "^1.0.1",
-    "rollup": "^0.48.2",
-    "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-json": "^2.3.0"
+    "jest-babel": "^1.0.1"
   },
   "babel": {
     "presets": [
-      ["env", { "modules": false }],
-      "flow"
+      ["env", { "modules": false }]
     ],
     "plugins": [
       "transform-object-rest-spread",
-      "transform-class-properties"
+      "transform-class-properties",
+      "external-helpers"
     ]
   }
 }
