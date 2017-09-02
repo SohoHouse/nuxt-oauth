@@ -23,7 +23,9 @@ oauth: {
 }
 ```
 
-3. Mark your authenticated components:
+### Use in your application
+
+- Mark your authenticated components:
 ```js
 // secret.vue
 
@@ -33,7 +35,7 @@ export default {
 }
 ```
 
-4. Use the access token as you'd like from the Vuex store:
+- Use the access token as you'd like from the Vuex store:
 ```js
 // any-component.vue
 
@@ -44,3 +46,30 @@ export default {
     }
 }
 ```
+
+### Develop
+
+```bash
+git clone git@github.com:samtgarson/nuxt-oauth.git
+cd nuxt-oauth
+yarn
+yarn test
+
+// To use while developing other apps:
+yarn link
+cd ../my-other-app
+yarn link nuxt-oauth
+```
+
+### Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/samtgarson/nuxt-oauth. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+### Thanks
+
+- Many thanks to [Evan You](https://github.com/yyx990803) and the [VueJS](https://github.com/vuejs) team for sustaining such a vibrant and supportive community around Vue JS
+- Many thanks also [Alex Chopin](https://github.com/alexchopin), [Sébastien Chopin](https://github.com/Atinux), [Pooya Parsa](https://github.com/pi0) and the other [Nuxt](https://github.com/nuxt) contributors for creating this awesome library
+
+### License
+
+The module is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
