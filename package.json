@@ -7,20 +7,17 @@
   "author": "samtgarson@gmail.com",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "lint": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
     "Base64": "^1.0.1",
-    "axios": "^0.16.2",
-    "babel-plugin-external-helpers": "^6.22.0",
     "client-oauth2": "^4.1.0",
     "client-sessions": "^0.8.0",
     "qs": "^6.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "eslint": "^4.5.0",
@@ -31,16 +28,14 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "jest": "^20.0.4",
-    "jest-babel": "^1.0.1"
+    "moment": "^2.18.1"
   },
   "babel": {
     "presets": [
-      ["env", { "modules": false }]
+      "env"
     ],
     "plugins": [
-      "transform-object-rest-spread",
-      "transform-class-properties",
-      "external-helpers"
+      "transform-object-rest-spread"
     ]
   }
 }
