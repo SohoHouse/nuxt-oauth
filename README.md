@@ -1,3 +1,5 @@
+![nuxt-oauth](https://feathericons.com/node_modules/feather-icons/dist/icons/lock.svg)
+
 **nuxt-outh** Simple OAuth2 integration for your Nuxt app
 
 [![CircleCI](https://circleci.com/gh/samtgarson/nuxt-oauth.svg?style=svg)](https://circleci.com/gh/samtgarson/nuxt-oauth)
@@ -9,7 +11,7 @@
 yarn add nuxt-oauth
 ```
 
-2. Add to your nuxt.config.js and configure:
+2. Add to your `nuxt.config.js` and configure:
 ```js
 // nuxt.config.js
 
@@ -25,13 +27,13 @@ oauth: {
 
 ### Use in your application
 
-- Mark your authenticated components:
+- Mark your authenticated page components:
 ```js
 // secret.vue
 
 export default {
-    authenticated: true,
-    name: 'MySecretComponent'
+  authenticated: true,
+  name: 'MySecretComponent'
 }
 ```
 
@@ -40,10 +42,10 @@ export default {
 // any-component.vue
 
 export default {
-    mounted () {
-        const { accessToken } = this.$store.state.oauth
-        // fetch more details from somewhere...
-    }
+  mounted () {
+    const { accessToken } = this.$store.state.oauth
+    // fetch more details from somewhere...
+  }
 }
 ```
 
@@ -55,7 +57,7 @@ cd nuxt-oauth
 yarn
 yarn test
 
-// To use while developing other apps:
+# To use while developing other apps:
 yarn link
 cd ../my-other-app
 yarn link nuxt-oauth
