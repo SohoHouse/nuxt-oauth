@@ -90,6 +90,7 @@ export default {
 | `oauthClientSecret` | * | Client ID of your application, registered with your OAuth provider |
 | `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise). |
 | `fetchUser` | | Optional hook which is called when logging in to fetch your user object. Receives args `(accessToken)`. |
+| `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in. |
   
 ### Manual Usage
 
@@ -100,6 +101,10 @@ export default {
 - **Log Out**
   
   Redirect to `/auth/logout?redirect-uri=REDIRECT_URL` where `REDIRECT_URL` is the URL you'd like to be redirected back to after successfully logging out.
+
+### With your tests
+
+Set `options.oauth.testMode` to `true` to tell the module to skip authentication. Using this, along with the `fetchUser` option, can be helpful in e2e tests to stub your test users.
 
 ## Develop
 
