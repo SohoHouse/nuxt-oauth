@@ -90,7 +90,7 @@ export default {
 | `oauthClientSecret` | * | Client ID of your application, registered with your OAuth provider |
 | `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise). |
 | `fetchUser` | | Optional hook which is called when logging in to fetch your user object. Receives args `(accessToken)`. |
-| `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in. Will never be turned on when `NODE_ENV === 'production'`  |
+| `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in. |
   
 ### Manual Usage
 
