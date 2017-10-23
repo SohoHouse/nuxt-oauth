@@ -46,3 +46,18 @@ describe('Prod', () => {
     expect(headers.location).toContain(config.oauth.oauthHost)
   })
 })
+
+describe('Test', () => {
+  setup({ oauth: { testMode: true } })
+
+  test('render', async () => {
+    const { body } = await get('/')
+    expect(body).toContain('Works!')
+  })
+
+  test('secret redirect', async () => {
+    const { statusCode, body } = await get('/secret')
+    expect(statusCode).toEqual(200)
+    expect(body).toContain('Shhh')
+  })
+})
