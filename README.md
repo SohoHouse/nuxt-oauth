@@ -1,4 +1,4 @@
-![nuxt-oauth](https://feathericons.com/node_modules/feather-icons/dist/icons/lock.svg)
+![nuxt-oauth](https://raw.githubusercontent.com/feathericons/feather/master/icons/lock.svg?sanitize=true)
 
 **nuxt-outh** Simple OAuth2 integration for your Nuxt app
 
