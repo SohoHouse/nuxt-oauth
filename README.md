@@ -1,6 +1,6 @@
 ![nuxt-oauth](https://raw.githubusercontent.com/feathericons/feather/master/icons/lock.svg?sanitize=true)
 
-**nuxt-outh** Simple OAuth2 integration for your Nuxt app
+**nuxt-oauth** Simple OAuth2 integration for your Nuxt app
 
 [![CircleCI](https://circleci.com/gh/samtgarson/nuxt-oauth.svg?style=svg)](https://circleci.com/gh/samtgarson/nuxt-oauth)
 
