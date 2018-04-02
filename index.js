@@ -4,7 +4,8 @@ const base = require('./lib/server-middleware')
 const defaultOptions = {
   moduleName: 'oauth',
   fetchUser: () => ({}),
-  onLogout: () => {}
+  onLogout: () => {},
+  scopes: []
 }
 
 module.exports = function NuxtOAuth (moduleOptions) {
@@ -12,6 +13,7 @@ module.exports = function NuxtOAuth (moduleOptions) {
 
   if (typeof options.onLogout !== 'function') throw new Error('options.onLogout must be a function')
   if (typeof options.fetchUser !== 'function') throw new Error('options.fetchUser must be a function')
+  if (options.scopes && !Array.isArray(options.scopes)) throw new Error('options.scopes must be an array')
 
   // Setup middlewares
   this.addServerMiddleware(base(options))
