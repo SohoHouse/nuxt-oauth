@@ -32,7 +32,7 @@ const setup = (configOverride = {}) => {
   })
 }
 
-describe('Prod', () => {
+describe('without test mode', () => {
   setup()
 
   test('render', async () => {
@@ -45,9 +45,15 @@ describe('Prod', () => {
     expect(statusCode).toEqual(302)
     expect(headers.location).toContain(config.oauth.oauthHost)
   })
+
+  test('login redirect', async () => {
+    const { statusCode, headers } = await get('/auth/login')
+    expect(statusCode).toEqual(302)
+    expect(headers.location).toContain(config.oauth.oauthHost)
+  })
 })
 
-describe('Test', () => {
+describe('with test mode', () => {
   setup({ oauth: { testMode: true } })
 
   test('render', async () => {

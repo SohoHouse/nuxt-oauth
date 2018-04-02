@@ -4,6 +4,17 @@
 
 [![CircleCI](https://circleci.com/gh/samtgarson/nuxt-oauth.svg?style=svg)](https://circleci.com/gh/samtgarson/nuxt-oauth)
 
+- [Usage](#usage)
+  - [Get Setup](#get-setup)
+  - [Use in your application](#use-in-your-application)
+  - [Configuration](#configuration)
+  - [Helpers](#helpers)
+  - [With your tests](#with-your-tests)
+- [Develop](#develop)
+  - [Contributing](#contributing)
+  - [Thanks](#thanks)
+  - [License](#license)
+
 ## Usage
 
 ### Get Setup
@@ -50,7 +61,7 @@ export default {
 }
 ```
 
-- Mark your authenticated page components:
+- Mark your authenticated page components (`nuxt-oauth` will ensure users are logged in before accessing these pages):
 ```js
 // secret.vue
 
@@ -60,48 +71,63 @@ export default {
 }
 ```
 
-- Or, manually log in:
-```html
-// any-component.vue
-<template>
-  <a @click="login">Log In</a>
-</template>
-<script>
-  export default {
-    methods: {
-      login () {
-        const redirectUrl = this.$route.path 
-        // Or another path to return to after logging in
-        this.$router.push(`/auth/login?redirect-url=${redirectUrl}`)
-      }
-    }
-  }
-</script>
-```
-
 ### Configuration
 
 | Option | Required? | Description |
 | :----- | :-------- | :---------- |
 | `sessionName` | * | Configure the name of the cookie that nuxt-oauth uses |
 | `secretKey` | * | Provide a secret key to sign the encrypted cookie. Do not leak this! |
-| `oauthHost` | * | Host of your OAuth provider |
+| `oauthHost` | * | Host of your OAuth provider _(usually ending in `oauth` or `oauth2`)_ |
 | `oauthClientID` | * | Client ID of your application, registered with your OAuth provider |
 | `oauthClientSecret` | * | Client ID of your application, registered with your OAuth provider |
-| `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise). |
-| `fetchUser` | | Optional hook which is called when logging in to fetch your user object. Receives args `(accessToken)`. |
-| `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in. |
+| `scopes` |  | An array of scopes to authenticate against |
+| `authorizationPath` |  | The path to redirect users to authenticate _(defaults to `/authorize`)_ |
+| `accessTokenPath` |  | The path to request the access token _(defaults to `/token`)_ |
+| `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. _Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise)._ |
+| `fetchUser` | | Optional hook which is called when logging in to fetch your user object. _Receives args `(accessToken)`._ |
+| `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in _(see [here](#with-your-tests) for more)_. |
   
-### Manual Usage
+### Helpers
 
-- **Log In**
+You can also use the functionality manually. `nuxt-oauth` injects the following helpers into your store, components and `ctx.app`: `$login` and `$logout`. Use these to manually log your user in or out. 
+
+Following a successful login/logout, your user will be redirected back to the page from which the helper was called (you can pass a `redirectUrl` to the helpers to override this). For a full example, see below.
+
+
+```html
+<!-- any-component.vue -->
+
+<template>
+  <a @click="logout" v-if="loggedIn">Log Out</a>
+  <a @click="login" v-else>Log In</a>
+</template>
+
+<script>
+  export default {
+    asyncData({ app }) {
+      // Use from context
+      app.$login()
+    }
+    computed () {
+      loggedIn () {
+        return this.$store.state.oauth.accessToken
+      }
+    },
+    methods: {
+      login () {
+        // defaults to redirecting back to the current page
+        this.$login()
+      },
+      logout () {
+        // customise the redirrect url
+        const redirectUrl = '/my-target-path'
+        this.$logout(redirectUrl)
+      }
+    }
+  }
+</script>
+```
   
-  Redirect to `/auth/login?redirect-uri=REDIRECT_URL` where `REDIRECT_URL` is the URL you'd like to be redirected back to after successfully logging in.
-
-- **Log Out**
-  
-  Redirect to `/auth/logout?redirect-uri=REDIRECT_URL` where `REDIRECT_URL` is the URL you'd like to be redirected back to after successfully logging out.
-
 ### With your tests
 
 Set `options.oauth.testMode` to `true` to tell the module to skip authentication. Using this, along with the `fetchUser` option, can be helpful in e2e tests to stub your test users.
