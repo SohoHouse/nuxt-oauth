@@ -1,7 +1,6 @@
 <template>
 <div>
-    <h1>Works!</h1>
-    <a href="/test">Test something</a>
+    <h1>Testing...</h1>
     <button @click="$login()">Login</button>
 </div>
 </template>
