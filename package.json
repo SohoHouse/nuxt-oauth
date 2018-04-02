@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
   "repository": "https://github.com/samtgarson/nuxt-oauth",
@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "test": "NODE_ENV=test jest",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "start": "nuxt -c ./__tests__/fixture/nuxt.config.js"
   },
   "dependencies": {
     "Base64": "^1.0.1",
