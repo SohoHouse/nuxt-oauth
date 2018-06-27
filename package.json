@@ -7,7 +7,9 @@
   "author": "samtgarson@gmail.com",
   "license": "MIT",
   "scripts": {
-    "test": "NODE_ENV=test jest",
+    "test": "yarn test:unit && yarn test:e2e",
+    "test:unit": "jest lib",
+    "test:e2e": "NODE_ENV=test jest e2e.js",
     "lint": "eslint --ignore-path .gitignore .",
     "start": "nuxt -c ./__tests__/fixture/nuxt.config.js"
   },
