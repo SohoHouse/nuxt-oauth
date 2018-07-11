@@ -35,6 +35,7 @@ oauth: {
   oauthHost: process.env.OAUTH_HOST,
   oauthClientID: process.env.OAUTH_CLIENT_ID,
   oauthClientSecret: process.env.OAUTH_CLIENT_SECRET,
+  getOauthHost: req => req.params.oauth_host,
   onLogout: (req, res) => {
     // do something after logging out
   },
@@ -80,11 +81,12 @@ export default {
 | `oauthHost` | * | Host of your OAuth provider _(usually ending in `oauth` or `oauth2`)_ |
 | `oauthClientID` | * | Client ID of your application, registered with your OAuth provider |
 | `oauthClientSecret` | * | Client ID of your application, registered with your OAuth provider |
+| `getOauthHost` |  | Optional hook to define `oauthHost` at runtime, which falls back to `oauthHost` in case of error. _Receives args `(req)`._ |
 | `scopes` |  | An array of scopes to authenticate against |
 | `authorizationPath` |  | The path to redirect users to authenticate _(defaults to `/authorize`)_ |
 | `accessTokenPath` |  | The path to request the access token _(defaults to `/token`)_ |
 | `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. _Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise)._ |
-| `fetchUser` | | Optional hook which is called when logging in to fetch your user object. _Receives args `(accessToken, request)`._ |
+| `fetchUser` | | Optional hook which is called when logging in to fetch your user object. _Receives args `(accessToken, request, options)`._ |
 | `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in _(see [here](#with-your-tests) for more)_. |
   
 ### Helpers
