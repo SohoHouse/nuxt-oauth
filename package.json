@@ -48,6 +48,7 @@
     ]
   },
   "jest": {
+    "clearMocks": true,
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/__tests__/fixture/"
