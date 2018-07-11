@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
   "repository": "https://github.com/samtgarson/nuxt-oauth",
