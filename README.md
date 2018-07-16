@@ -2,7 +2,7 @@
 
 **nuxt-oauth** Simple OAuth2 integration for your Nuxt app
 
-[![CircleCI](https://circleci.com/gh/samtgarson/nuxt-oauth.svg?style=svg)](https://circleci.com/gh/samtgarson/nuxt-oauth)
+[![CircleCI](https://circleci.com/gh/SohoHouse/nuxt-oauth.svg?style=svg)](https://circleci.com/gh/SohoHouse/nuxt-oauth)
 
 - [Usage](#usage)
   - [Get Setup](#get-setup)

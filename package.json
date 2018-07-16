@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
-  "repository": "https://github.com/samtgarson/nuxt-oauth",
+  "repository": "https://github.com/SohoHouse/nuxt-oauth",
   "author": "samtgarson@gmail.com",
   "license": "MIT",
   "scripts": {
