@@ -8,10 +8,10 @@
   "license": "MIT",
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e",
-    "test:unit": "jest lib",
-    "test:e2e": "NODE_ENV=test jest e2e.js",
+    "test:unit": "jest ./test/unit",
+    "test:e2e": "NODE_ENV=test jest ./test/e2e/index.js",
     "lint": "eslint --ignore-path .gitignore .",
-    "start": "nuxt -c ./__tests__/fixture/nuxt.config.js"
+    "dev": "NODE_ENV=development nuxt -c ./test/e2e/fixture/nuxt.config.js"
   },
   "dependencies": {
     "Base64": "^1.0.1",
@@ -25,6 +25,7 @@
     "babel-plugin-dynamic-import-node": "^1.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
+    "dotenv": "^6.0.0",
     "eslint": "^4.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-import-resolver-jest": "^1.0.0",
@@ -34,7 +35,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "jest": "^20.0.4",
     "moment": "^2.18.1",
-    "nuxt": "1.0.0",
+    "nuxt": "^1.4.1",
     "request-promise-native": "^1.0.5",
     "vuex": "^3.0.0"
   },
@@ -49,10 +50,14 @@
   },
   "jest": {
     "clearMocks": true,
+    "testMatch": ["<rootDir>/test/**/*.js"],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/__tests__/fixture/"
+      "/test/e2e/fixture/"
     ],
+    "moduleNameMapper": {
+      "^@/(.+)": "<rootDir>/lib/$1"
+    },
     "testEnvironment": "node"
   }
 }

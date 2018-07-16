@@ -1,8 +1,9 @@
 import Middleware from '@@/.nuxt/middleware'
-import Plugin from '../plugin' // eslint-disable-line no-unused-vars
+import Plugin from '@/plugin' // eslint-disable-line no-unused-vars
 
 jest.mock('@@/.nuxt/middleware', () => ({}), { virtual: true })
 
+const moduleName = '<%= options.moduleName %>'
 let context
 
 beforeEach(() => {
@@ -11,7 +12,7 @@ beforeEach(() => {
     store: {
       registerModule: jest.fn(),
       state: {
-        oauth: {}
+        [moduleName]: {}
       }
     },
     redirect: jest.fn(),
@@ -65,7 +66,7 @@ describe('Middleware', () => {
 
     describe('with an access token', () => {
       beforeEach(() => {
-        context.store.state.oauth.accessToken = 'i am an access token'
+        context.store.state[moduleName].accessToken = 'i am an access token'
       })
 
       it('does nothing', async () => {
@@ -103,7 +104,7 @@ describe('Middleware', () => {
 
       describe('with an access token', () => {
         beforeEach(() => {
-          context.store.state.oauth.accessToken = 'i am an access token'
+          context.store.state[moduleName].accessToken = 'i am an access token'
         })
 
         it('does nothing', async () => {

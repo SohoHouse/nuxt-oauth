@@ -40,7 +40,7 @@ module.exports = {
       json: 'always'
     }],
     'import/no-extraneous-dependencies': ['error', {
-      'devDependencies': ['**/__tests__/*']
+      'devDependencies': ['**/test/**/*']
     }]
   },
   globals: {}

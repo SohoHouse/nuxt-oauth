@@ -2,7 +2,7 @@ import moment from 'moment'
 import OAuth from 'client-oauth2'
 import sessions from 'client-sessions'
 import { btoa } from 'Base64'
-import Handler from '../handler'
+import Handler from '@/handler'
 
 jest.mock('client-oauth2')
 jest.mock('client-sessions', () => jest.fn(() => (req, res, resolve) => resolve()))

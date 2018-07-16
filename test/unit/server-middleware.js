@@ -1,7 +1,7 @@
-import Middleware from '../server-middleware'
-import Handler from '../handler'
+import Middleware from '@/server-middleware'
+import Handler from '@/handler'
 
-jest.mock('../handler.js', () => jest.genMockFromModule('../handler'))
+jest.mock('@/handler.js', () => jest.genMockFromModule('../../lib/handler'))
 
 Handler.prototype.redirectToOAuth = jest.fn()
 Handler.prototype.authenticateCallbackToken = jest.fn()
@@ -36,19 +36,20 @@ describe('Server Middleware', () => {
     expect(Handler).toHaveBeenCalledWith({ req, res, next, options })
   })
 
-  describe('with getOauthHost', () => {
-    const getter = jest.fn(({ url }) => url)
+  const customKeys = ['oauthHost', 'oauthClientID', 'oauthClientSecret']
+  customKeys.forEach(key => {
+    describe(`with ${key} as a function`, () => {
+      const getter = jest.fn(({ url }) => url)
 
-    beforeEach(async () => {
-      const fnOptions = {
-        ...options,
-        getOauthHost: getter
-      }
-      middleware = Middleware(fnOptions)
-      await middleware(req, res, next)
-    })
+      beforeEach(async () => {
+        const fnOptions = {
+          ...options,
+          [key]: getter
+        }
+        middleware = Middleware(fnOptions)
+        await middleware(req, res, next)
+      })
 
-    describe('normally', () => {
       it('calls the function', () => {
         expect(getter).toHaveBeenCalledWith(req)
       })
@@ -58,22 +59,7 @@ describe('Server Middleware', () => {
           req,
           res,
           next,
-          options: expect.objectContaining({ oauthHost: req.url })
-        })
-      })
-    })
-
-    describe('when getOauthHost throws an error', () => {
-      beforeAll(() => {
-        getter.mockImplementationOnce(() => { throw new Error('I am a teapot') })
-      })
-
-      it('falls back to oauthHost', () => {
-        expect(Handler).toHaveBeenCalledWith({
-          req,
-          res,
-          next,
-          options: expect.objectContaining({ oauthHost: options.oauthHost })
+          options: expect.objectContaining({ [key]: req.url })
         })
       })
     })
