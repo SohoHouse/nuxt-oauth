@@ -147,7 +147,7 @@ Set `options.oauth.testMode` to `true` to tell the module to skip authentication
 ## Develop
 
 ```bash
-git clone git@github.com:samtgarson/nuxt-oauth.git
+git clone git@github.com:SohoHouse/nuxt-oauth.git
 cd nuxt-oauth
 yarn
 yarn test
@@ -158,9 +158,21 @@ cd ../my-other-app
 yarn link nuxt-oauth
 ```
 
+### Running locally
+
+To run the fixture Nuxt app (`/test/e2e/fixture`) locally, make sure to:
+```bash
+cp .env.example .env
+```
+and populate with your real values. Then, run:
+```
+yarn dev
+```
+To boot the app locally.
+
 ### Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/samtgarson/nuxt-oauth. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/SohoHouse/nuxt-oauth. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ### Thanks
 
