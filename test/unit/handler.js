@@ -182,7 +182,8 @@ describe('Handler', () => {
       })
 
       it('fetches the user', () => {
-        expect(testOptions.fetchUser).toHaveBeenCalledWith(token.accessToken, handler.req, testOptions)
+        expect(testOptions.fetchUser)
+          .toHaveBeenCalledWith(token.accessToken, handler.req, testOptions)
       })
 
       it('saves the user to the session and the request', () => {
