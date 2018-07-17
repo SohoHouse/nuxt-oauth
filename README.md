@@ -5,9 +5,11 @@
 [![CircleCI](https://circleci.com/gh/SohoHouse/nuxt-oauth.svg?style=svg)](https://circleci.com/gh/SohoHouse/nuxt-oauth)
 
 - [Usage](#usage)
+  - [Requirements](#requirements)
   - [Get Setup](#get-setup)
   - [Use in your application](#use-in-your-application)
   - [Configuration](#configuration)
+    - [Dynamic Configuration](##dynamic-configuration)
   - [Helpers](#helpers)
   - [With your tests](#with-your-tests)
 - [Develop](#develop)
@@ -16,6 +18,12 @@
   - [License](#license)
 
 ## Usage
+
+### Requirements
+
+- [Nuxt](https://nuxtjs.org/)
+- Universal deployment (i.e. a [server rendered app](https://nuxtjs.org/guide#server-rendered-universal-ssr-), not an [SPA](https://nuxtjs.org/guide#single-page-applications-spa-))
+- a [Vuex store](https://nuxtjs.org/guide/vuex-store)
 
 ### Get Setup
 
@@ -35,7 +43,6 @@ oauth: {
   oauthHost: process.env.OAUTH_HOST,
   oauthClientID: process.env.OAUTH_CLIENT_ID,
   oauthClientSecret: process.env.OAUTH_CLIENT_SECRET,
-  getOauthHost: req => req.params.oauth_host,
   onLogout: (req, res) => {
     // do something after logging out
   },
@@ -78,23 +85,26 @@ export default {
 | :----- | :-------- | :---------- |
 | `sessionName` | * | Configure the name of the cookie that nuxt-oauth uses |
 | `secretKey` | * | Provide a secret key to sign the encrypted cookie. Do not leak this! |
-| `oauthHost` | * | Host of your OAuth provider _(usually ending in `oauth` or `oauth2`)_ |
-| `oauthClientID` | * | Client ID of your application, registered with your OAuth provider |
-| `oauthClientSecret` | * | Client ID of your application, registered with your OAuth provider |
-| `getOauthHost` |  | Optional hook to define `oauthHost` at runtime, which falls back to `oauthHost` in case of error. _Receives args `(req)`._ |
+| `oauthHost` | * | Host of your OAuth provider _(usually ending in `oauth` or `oauth2`)_. _Can be string or function receiving args `(req)`_ |
+| `oauthClientID` | * | Client ID of your application, registered with your OAuth provider. _Can be string or function receiving args `(req)`_ |
+| `oauthClientSecret` | * | Client ID of your application, registered with your OAuth provider. _Can be string or function receiving args `(req)`_ |
 | `scopes` |  | An array of scopes to authenticate against |
 | `authorizationPath` |  | The path to redirect users to authenticate _(defaults to `/authorize`)_ |
 | `accessTokenPath` |  | The path to request the access token _(defaults to `/token`)_ |
+| `moduleName` |  | The name of the vuex module to be created by nuxt-oauth. _(defaults to `oauth`)_ |
 | `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. _Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise)._ |
 | `fetchUser` | | Optional hook which is called when logging in to fetch your user object. _Receives args `(accessToken, request, options)`._ |
 | `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in _(see [here](#with-your-tests) for more)_. |
   
+#### Dynamic Configuration
+
+To dynamically set configuration at runtime, `oauthHost`, `oauthClientID`, `oauthClientSecret` can be strings but also can be `async` functions which accept `req` as their only argument. This can be useful to choose configuration based on the URL or headers of the request.
+
 ### Helpers
 
-You can also use the functionality manually. `nuxt-oauth` injects the following helpers into your store, components and `ctx.app`: `$login` and `$logout`. Use these to manually log your user in or out. 
+You can also use the functionality manually. `nuxt-oauth` injects the following helpers into your store, components and `ctx.app`: **`$login`** and **`$logout`**. Use these to manually log your user in or out. 
 
 Following a successful login/logout, your user will be redirected back to the page from which the helper was called (you can pass a `redirectUrl` to the helpers to override this). For a full example, see below.
-
 
 ```html
 <!-- any-component.vue -->

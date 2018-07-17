@@ -43,13 +43,13 @@ describe('without test mode', () => {
   test('secret redirect', async () => {
     const { statusCode, headers } = await get('/secret')
     expect(statusCode).toEqual(302)
-    expect(headers.location).toContain(config.oauth.oauthHost)
+    expect(headers.location).toContain(config.oauth.oauthHost())
   })
 
   test('login redirect', async () => {
     const { statusCode, headers } = await get('/auth/login')
     expect(statusCode).toEqual(302)
-    expect(headers.location).toContain(config.oauth.oauthHost)
+    expect(headers.location).toContain(config.oauth.oauthHost())
   })
 })
 
