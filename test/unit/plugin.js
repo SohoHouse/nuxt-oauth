@@ -162,12 +162,20 @@ describe('Helpers', () => {
       it('redirects correctly', () => {
         action()
 
-        const expected = `/auth/${actionName}?redirect-url=${context.route.path}`
+        const expected = `/auth/${actionName}?redirect-url=${context.route.fullPath}`
         expect(context.redirect).toHaveBeenCalledWith(expected)
       })
 
       it('redirects correctly with custom redirect url', () => {
         const redirectUrl = '/custom'
+        action(redirectUrl)
+
+        const expected = `/auth/${actionName}?redirect-url=${redirectUrl}`
+        expect(context.redirect).toHaveBeenCalledWith(expected)
+      })
+
+      it('retains query parameters during redirect', () => {
+        const redirectUrl = '/custom?foo=bar'
         action(redirectUrl)
 
         const expected = `/auth/${actionName}?redirect-url=${redirectUrl}`
