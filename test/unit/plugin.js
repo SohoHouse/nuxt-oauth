@@ -170,7 +170,7 @@ describe('Helpers', () => {
         const redirectUrl = '/custom'
         action(redirectUrl)
 
-        const expected = `/auth/${actionName}?redirect-url=${redirectUrl}`
+        const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(redirectUrl)}`
         expect(context.redirect).toHaveBeenCalledWith(expected)
       })
 
@@ -178,7 +178,7 @@ describe('Helpers', () => {
         const redirectUrl = '/custom?foo=bar'
         action(redirectUrl)
 
-        const expected = `/auth/${actionName}?redirect-url=${redirectUrl}`
+        const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(redirectUrl)}`
         expect(context.redirect).toHaveBeenCalledWith(expected)
       })
     })
