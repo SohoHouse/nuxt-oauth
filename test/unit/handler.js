@@ -15,6 +15,7 @@ let token
 let refreshedToken
 let reqWithSession
 let reqWithHttps
+let reqWithAuth
 let mockToken
 let savedSession
 let user
@@ -75,6 +76,11 @@ beforeEach(() => {
       'x-forwarded-proto': 'https'
     },
     url: '/path'
+  }
+  reqWithAuth = {
+    headers: {
+      authorization: 'Bearer accessToken'
+    }
   }
   mockToken = {
     expiresIn: jest.fn(),
@@ -372,6 +378,84 @@ describe('Handler', () => {
           expect(handler.redirect).toHaveBeenCalledWith('/')
         })
       })
+    })
+  })
+
+  describe('#checkRequestAuthorization', () => {
+    let handler
+    let testReq
+    let testRes
+    let result
+    let hasToken = true
+    let saveDataError = false
+
+    const accessToken = '1q2w3e4r5t6y7u8i9o0p'
+
+    beforeAll(() => {
+      result = undefined
+      testRes = {}
+      testReq = { ...reqWithSession, ...reqWithAuth, url: '/path?redirect-url=/new-path' }
+    })
+
+    beforeEach(async () => {
+      handler = new Handler({ req: testReq, res: testRes, options })
+      handler.saveData = jest.fn(async () => {
+        if (saveDataError) throw new Error('could not save')
+      })
+      handler.extractToken = jest.fn(() => hasToken ? accessToken : null)
+      handler.logout = jest.fn(() => null)
+
+      try {
+        await handler.checkRequestAuthorization()
+      } catch (e) {
+        // catch error
+      }
+    })
+
+    it('returns false when an existing token is used', async () => {
+      expect(result).toBeFalsy()
+    })
+
+    describe('failing saveData', () => {
+      beforeAll(() => {
+        saveDataError = true
+      })
+      it('returns calls logout when saveData fails', () => {
+        expect(handler.logout).toHaveBeenCalled()
+      })
+    })
+
+    describe('without a token', () => {
+      beforeAll(async () => {
+        hasToken = false
+      })
+
+      it('returns false when no token is presented', () => {
+        expect(result).toBeFalsy()
+      })
+    })
+  })
+
+  describe('#extractToken', () => {
+    let handler
+    const accessToken = '1q2w3e4r5t6y7u8i9o0p'
+
+    it('takes just the token from a bearer authorization', () => {
+      handler = new Handler({ req: { ...req, headers: { authorization: `Bearer ${accessToken}` } }, res, options })
+
+      expect(handler.extractToken()).toBe(accessToken)
+    })
+
+    it('takes just the token from a other authorization', () => {
+      handler = new Handler({ req: { ...req, headers: { authorization: `Basic ${accessToken}` } }, res, options })
+
+      expect(handler.extractToken()).toBe(accessToken)
+    })
+
+    it('returns null when no authorization is found', () => {
+      handler = new Handler({ req, res, options })
+
+      expect(handler.extractToken()).toBeNull()
     })
   })
 })
