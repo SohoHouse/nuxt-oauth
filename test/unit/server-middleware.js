@@ -66,6 +66,11 @@ describe('Server Middleware', () => {
   })
 
   describe('for a normal route', () => {
+    it('checks the request for a token', async () => {
+      await middleware(req, res, next)
+      expect(Handler.prototype.checkRequestAuthorization).toHaveBeenCalled()
+    })
+
     it('updates the token', async () => {
       await middleware(req, res, next)
       expect(Handler.prototype.updateToken).toHaveBeenCalled()
