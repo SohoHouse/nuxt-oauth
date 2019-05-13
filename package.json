@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
@@ -58,6 +58,8 @@
     "testEnvironment": "node"
   },
   "eslintConfig": {
-    "extends": ["@sohohouse"]
+    "extends": [
+      "@sohohouse"
+    ]
   }
 }
