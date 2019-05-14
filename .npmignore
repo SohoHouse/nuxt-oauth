@@ -1,0 +1,8 @@
+# Folders
+.circleci/
+.nuxt/
+.history/
+test/
+
+# Files
+.env*
