@@ -30,7 +30,7 @@
     "eslint": "^4.5.0",
     "jest": "^20.0.4",
     "moment": "^2.18.1",
-    "nuxt": "^2.9.2",
+    "nuxt": "2.3.3",
     "request-promise-native": "^1.0.5",
     "vuex": "^3.0.0"
   },
