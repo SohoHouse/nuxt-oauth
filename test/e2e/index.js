@@ -1,6 +1,5 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000
 process.env.PORT = process.env.PORT || 5060
-process.env.NODE_ENV = 'production'
 
 const { Nuxt, Builder } = require('nuxt')
 const request = require('request-promise-native')
