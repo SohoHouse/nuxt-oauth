@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
@@ -21,25 +21,31 @@
     "url-join": "^4.0.0"
   },
   "devDependencies": {
-    "@sohohouse/eslint-config": "^0.0.3",
-    "babel-eslint": "^7.2.3",
-    "babel-plugin-dynamic-import-node": "^1.1.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@sohohouse/eslint-config": "^0.0.4",
+    "babel-eslint": "^10.0.3",
+    "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-preset-env": "^1.6.0",
-    "dotenv": "^6.0.0",
-    "eslint": "^4.5.0",
-    "jest": "^20.0.4",
+    "dotenv": "^8.1.0",
+    "eslint": "^6.4.0",
+    "jest": "^24.9.0",
     "moment": "^2.18.1",
-    "nuxt": "^1.4.1",
+    "nuxt": "^2.9.2",
     "request-promise-native": "^1.0.5",
     "vuex": "^3.0.0"
   },
   "babel": {
     "presets": [
-      "env"
+      [
+        "@babel/preset-env",
+        {
+          "corejs": "2",
+          "useBuiltIns": "usage"
+        }
+      ]
     ],
     "plugins": [
-      "transform-object-rest-spread",
+      "@babel/plugin-proposal-object-rest-spread",
       "babel-plugin-dynamic-import-node"
     ]
   },
