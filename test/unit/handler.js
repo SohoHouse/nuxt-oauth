@@ -244,6 +244,11 @@ describe('Handler', () => {
       expect(handler.createSession).toHaveBeenCalled()
     })
 
+    it('returns the token', async () => {
+      const returnedToken = await handler.updateToken()
+      expect(returnedToken).toEqual(token)
+    })
+
     it('does nothing else if no token exists already', async () => {
       handler.req[options.sessionName] = {}
       await handler.updateToken()
