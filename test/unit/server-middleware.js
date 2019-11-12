@@ -1,7 +1,7 @@
 import Middleware from '@/server-middleware'
 import Handler from '@/handler'
 
-import { INVALID_SESSION } from './constants'
+import { INVALID_SESSION } from '../../lib/constants'
 
 jest.mock('@/handler.js', () => jest.genMockFromModule('../../lib/handler'))
 
