@@ -1,6 +1,8 @@
 import Middleware from '@/server-middleware'
 import Handler from '@/handler'
 
+import { INVALID_SESSION } from '../../lib/constants'
+
 jest.mock('@/handler.js', () => jest.genMockFromModule('../../lib/handler'))
 
 Handler.prototype.redirectToOAuth = jest.fn()
@@ -18,7 +20,10 @@ beforeEach(() => {
     headers: { host: 'localhost:3000' },
     url: '/path'
   }
-  res = {}
+  res = {
+    end: jest.fn(),
+    writeHead: jest.fn()
+  }
   options = {
     oauthHost: 'oauthHost',
     oauthClientID: 'oauthClientID',
@@ -119,6 +124,40 @@ describe('Server Middleware', () => {
     it('complets the oauth handshake', async () => {
       await middleware(req, res, next)
       expect(Handler.prototype.authenticateCallbackToken).toHaveBeenCalled()
+    })
+  })
+
+  describe('for /auth/refresh', () => {
+    beforeEach(() => {
+      req.url = '/auth/refresh'
+      Handler.prototype.isRoute = jest.fn(route => route === 'refresh')
+    })
+
+    it('does not call next', async () => {
+      await middleware(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('refreshes the token', async () => {
+      const accessToken = 'validToken'
+
+      Handler.prototype.updateToken.mockReturnValueOnce({ accessToken })
+
+      await middleware(req, res, next)
+
+      expect(Handler.prototype.updateToken).toHaveBeenCalled()
+      expect(res.writeHead).toHaveBeenCalledWith(200, { 'Content-Type': 'application/json' })
+      expect(res.end).toHaveBeenCalledWith(JSON.stringify({ accessToken }))
+    })
+
+    it('returns 401 on invalid session', async () => {
+      Handler.prototype.updateToken.mockReturnValueOnce(null)
+
+      await middleware(req, res, next)
+
+      expect(Handler.prototype.updateToken).toHaveBeenCalled()
+      expect(res.writeHead).toHaveBeenCalledWith(401, { 'Content-Type': 'application/json' })
+      expect(res.end).toHaveBeenCalledWith(JSON.stringify({ error: INVALID_SESSION }))
     })
   })
 })

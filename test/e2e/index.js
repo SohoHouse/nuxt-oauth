@@ -5,6 +5,7 @@ const { Nuxt, Builder } = require('nuxt')
 const request = require('request-promise-native')
 
 const config = require('./fixture/nuxt.config')
+const { INVALID_SESSION } = require('../../lib/constants')
 
 const url = path => `http://localhost:${process.env.PORT}${path}`
 const get = path => request({
@@ -49,6 +50,15 @@ describe('without test mode', () => {
     const { statusCode, headers } = await get('/auth/login')
     expect(statusCode).toEqual(302)
     expect(headers.location).toContain(config.oauth.oauthHost())
+  })
+
+  test('invalid session refresh token', async () => {
+    const { statusCode, body } = await get('/auth/refresh')
+
+    const parsedBody = JSON.parse(body)
+
+    expect(statusCode).toEqual(401)
+    expect(parsedBody.error).toBe(INVALID_SESSION)
   })
 })
 
