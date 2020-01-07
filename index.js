@@ -1,13 +1,12 @@
 const { resolve } = require('path')
 const base = require('./lib/server-middleware')
-const component = require("./lib/component")
 
 const defaultOptions = {
   moduleName: 'oauth',
   fetchUser: () => ({}),
   onLogout: () => {},
   scopes: [],
-  component
+  component: null
 }
 
 module.exports = function NuxtOAuth (moduleOptions) {
@@ -33,15 +32,15 @@ module.exports = function NuxtOAuth (moduleOptions) {
   this.options.router.middleware.push('auth')
 
   // Setup te /auth/login route
-  this.extendRoutes(routes => {
+  this.extendRoutes((routes, res) => {
     routes.push({
       name: 'oauth-login',
       path: '/auth/login',
-      component: options.component
+      component: options.component || res(__dirname, './lib/route.js')
     }, {
       name: 'oauth-logout',
       path: '/auth/logout',
-      component: options.component
+      component: options.component || res(__dirname, './lib/route.js')
     })
   })
 }
