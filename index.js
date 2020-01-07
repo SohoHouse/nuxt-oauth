@@ -6,7 +6,7 @@ const defaultOptions = {
   fetchUser: () => ({}),
   onLogout: () => {},
   scopes: [],
-  component: null
+  pageComponentPath: null
 }
 
 module.exports = function NuxtOAuth (moduleOptions) {
@@ -36,11 +36,11 @@ module.exports = function NuxtOAuth (moduleOptions) {
     routes.push({
       name: 'oauth-login',
       path: '/auth/login',
-      component: options.component || res(__dirname, './lib/route.js')
+      pageComponent: res(options.pageComponentPath) || res(__dirname, './lib/route.js')
     }, {
       name: 'oauth-logout',
       path: '/auth/logout',
-      component: options.component || res(__dirname, './lib/route.js')
+      pageComponent: res(options.pageComponentPath) || res(__dirname, './lib/route.js')
     })
   })
 }
