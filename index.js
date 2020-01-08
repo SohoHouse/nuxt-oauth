@@ -36,11 +36,11 @@ module.exports = function NuxtOAuth (moduleOptions) {
     routes.push({
       name: 'oauth-login',
       path: '/auth/login',
-      pageComponent: res(options.pageComponentPath)
+      component: res(options.pageComponentPath)
     }, {
       name: 'oauth-logout',
       path: '/auth/logout',
-      pageComponent: res(options.pageComponentPath)
+      component: res(options.pageComponentPath)
     })
   })
 }
