@@ -37,10 +37,10 @@ describe('Plugin', () => {
     expect(context.store.registerModule).toHaveBeenCalled()
   })
 
-  it('does not add the store module on client side', async () => {
+  it('adds the store module on client side', async () => {
     await (Plugin(context, () => {}))
 
-    expect(context.store.registerModule).not.toHaveBeenCalled()
+    expect(context.store.registerModule).toHaveBeenCalled()
   })
 })
 
@@ -152,41 +152,37 @@ describe('Helpers', () => {
   })
 
   it('injects login and logout', () => {
-    actions.forEach(a =>
-      expect(inject).toHaveBeenCalledWith(a, expect.any(Function))
-    )
+    actions.forEach(a => expect(inject).toHaveBeenCalledWith(a, expect.any(Function)))
   })
 
-  actions.forEach(actionName =>
-    describe(actionName, () => {
-      let action
+  actions.forEach(actionName => describe(actionName, () => {
+    let action
 
-      beforeEach(() => {
-        action = inject.mock.calls.find(([name]) => name === actionName)[1]
-      })
-
-      it('redirects correctly', () => {
-        action()
-
-        const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(context.route.fullPath)}`
-        expect(global.window.location.assign).toHaveBeenCalledWith(expected)
-      })
-
-      it('redirects correctly with custom redirect url', () => {
-        const redirectUrl = '/custom'
-        action(redirectUrl)
-
-        const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(redirectUrl)}`
-        expect(global.window.location.assign).toHaveBeenCalledWith(expected)
-      })
-
-      it('retains query parameters during redirect', () => {
-        const redirectUrl = '/custom?foo=bar'
-        action(redirectUrl)
-
-        const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(redirectUrl)}`
-        expect(global.window.location.assign).toHaveBeenCalledWith(expected)
-      })
+    beforeEach(() => {
+      action = inject.mock.calls.find(([name]) => name === actionName)[1]
     })
-  )
+
+    it('redirects correctly', () => {
+      action()
+
+      const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(context.route.fullPath)}`
+      expect(global.window.location.assign).toHaveBeenCalledWith(expected)
+    })
+
+    it('redirects correctly with custom redirect url', () => {
+      const redirectUrl = '/custom'
+      action(redirectUrl)
+
+      const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(redirectUrl)}`
+      expect(global.window.location.assign).toHaveBeenCalledWith(expected)
+    })
+
+    it('retains query parameters during redirect', () => {
+      const redirectUrl = '/custom?foo=bar'
+      action(redirectUrl)
+
+      const expected = `/auth/${actionName}?redirect-url=${encodeURIComponent(redirectUrl)}`
+      expect(global.window.location.assign).toHaveBeenCalledWith(expected)
+    })
+  }))
 })
