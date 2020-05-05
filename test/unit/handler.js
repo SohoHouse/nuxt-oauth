@@ -151,6 +151,22 @@ describe('Handler', () => {
     })
   })
 
+  describe('#getSessionToken', () => {
+    it('extracts token from the session', async () => {
+      const handler = new Handler({ req: reqWithSession, res, options })
+      const sessionToken = await handler.getSessionToken()
+
+      expect(sessionToken).toEqual(token)
+    })
+
+    it('returns an empty object when no session exists', async () => {
+      const handler = new Handler({ req, res, options })
+      const sessionToken = await handler.getSessionToken()
+
+      expect(sessionToken).toEqual({})
+    })
+  })
+
   describe('#saveData', () => {
     let handler
     let testToken
@@ -228,15 +244,16 @@ describe('Handler', () => {
     })
   })
 
+  // TODO - this function name was deprecated, but let's be kind and make sure it still works
   describe('#updateToken', () => {
     let handler
 
     beforeEach(() => {
       handler = new Handler({ req: reqWithSession, res, options })
-      handler.createSession = jest.fn(async () => {})
-      handler.saveData = jest.fn(async () => {})
-
-      handler.auth.createToken = jest.fn(() => mockToken)
+      handler.createSession = jest.fn().mockResolvedValue(null)
+      handler.saveData = jest.fn().mockResolvedValue(null)
+      handler.getSessionToken = jest.fn().mockReturnValue(token)
+      handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
     })
 
     it('creates a session', async () => {
@@ -246,22 +263,25 @@ describe('Handler', () => {
 
     it('returns the token', async () => {
       const returnedToken = await handler.updateToken()
-      expect(returnedToken).toEqual(token)
+      expect(returnedToken).toEqual(mockToken)
     })
 
     it('does nothing else if no token exists already', async () => {
       handler.req[options.sessionName] = {}
-      await handler.updateToken()
+      handler.getSessionToken.mockReturnValueOnce({})
 
-      await handler.updateToken()
+      const sessionToken = await handler.updateToken()
+
       expect(mockToken.refresh).not.toHaveBeenCalled()
       expect(handler.saveData).not.toHaveBeenCalled()
+      expect(sessionToken).toBeNull()
     })
 
     it('saves the token', async () => {
       await handler.updateToken()
       expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.saveData).toHaveBeenCalledWith(token)
+      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
+      expect(handler.saveData).toHaveBeenCalledWith(mockToken)
     })
 
     it('refreshes the token if its expired', async () => {
@@ -269,6 +289,93 @@ describe('Handler', () => {
       await handler.updateToken()
       expect(mockToken.refresh).toHaveBeenCalled()
       expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
+    })
+  })
+
+  describe('#authenticate', () => {
+    let handler
+
+    beforeEach(() => {
+      handler = new Handler({ req: reqWithSession, res, options })
+      handler.createSession = jest.fn().mockResolvedValue(null)
+      handler.saveData = jest.fn().mockResolvedValue(null)
+      handler.getSessionToken = jest.fn().mockReturnValue(token)
+      handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
+    })
+
+    it('creates a session', async () => {
+      await handler.authenticate()
+      expect(handler.createSession).toHaveBeenCalled()
+    })
+
+    it('returns the token', async () => {
+      const returnedToken = await handler.authenticate()
+      expect(returnedToken).toEqual(mockToken)
+    })
+
+    it('does nothing else if no token exists already', async () => {
+      handler.req[options.sessionName] = {}
+      handler.getSessionToken.mockReturnValueOnce({})
+
+      const sessionToken = await handler.authenticate()
+
+      expect(mockToken.refresh).not.toHaveBeenCalled()
+      expect(handler.saveData).not.toHaveBeenCalled()
+      expect(sessionToken).toBeNull()
+    })
+
+    it('saves the token', async () => {
+      await handler.authenticate()
+      expect(mockToken.refresh).not.toHaveBeenCalled()
+      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
+      expect(handler.saveData).toHaveBeenCalledWith(mockToken)
+    })
+
+    it('refreshes the token if its expired', async () => {
+      mockToken.expired.mockImplementationOnce(() => true)
+      await handler.authenticate()
+      expect(mockToken.refresh).toHaveBeenCalled()
+      expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
+    })
+  })
+
+  describe('#useRefreshToken', () => {
+    let handler
+
+    beforeEach(() => {
+      handler = new Handler({ req: reqWithSession, res, options })
+      handler.createSession = jest.fn().mockResolvedValue(null)
+      handler.saveData = jest.fn().mockResolvedValue(null)
+      handler.getSessionToken = jest.fn().mockReturnValue(token)
+      handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
+    })
+
+    it('creates a session', async () => {
+      await handler.useRefreshToken()
+      expect(handler.createSession).toHaveBeenCalled()
+    })
+
+    it('saves the refreshed token', async () => {
+      await handler.useRefreshToken()
+      expect(mockToken.refresh).toHaveBeenCalled()
+      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
+      expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
+    })
+
+    it('returns the refreshed token', async () => {
+      const returnedToken = await handler.useRefreshToken()
+      expect(returnedToken).toEqual(refreshedToken)
+    })
+
+    it('does nothing else if no token exists already', async () => {
+      handler.req[options.sessionName] = {}
+      handler.getSessionToken.mockReturnValueOnce({})
+
+      const sessionToken = await handler.useRefreshToken()
+
+      expect(mockToken.refresh).not.toHaveBeenCalled()
+      expect(handler.saveData).not.toHaveBeenCalled()
+      expect(sessionToken).toBeNull()
     })
   })
 

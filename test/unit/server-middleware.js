@@ -7,7 +7,8 @@ jest.mock('@/handler.js', () => jest.genMockFromModule('../../lib/handler'))
 
 Handler.prototype.redirectToOAuth = jest.fn()
 Handler.prototype.authenticateCallbackToken = jest.fn()
-Handler.prototype.updateToken = jest.fn()
+Handler.prototype.authenticate = jest.fn()
+Handler.prototype.useRefreshToken = jest.fn()
 
 let req
 let res
@@ -38,7 +39,9 @@ beforeEach(() => {
 describe('Server Middleware', () => {
   it('instantiates a handler', async () => {
     await middleware(req, res, next)
-    expect(Handler).toHaveBeenCalledWith({ req, res, next, options })
+    expect(Handler).toHaveBeenCalledWith({
+      req, res, next, options
+    })
   })
 
   const customKeys = ['oauthHost', 'oauthClientID', 'oauthClientSecret']
@@ -76,9 +79,9 @@ describe('Server Middleware', () => {
       expect(Handler.prototype.checkRequestAuthorization).toHaveBeenCalled()
     })
 
-    it('updates the token', async () => {
+    it('authenticates the session', async () => {
       await middleware(req, res, next)
-      expect(Handler.prototype.updateToken).toHaveBeenCalled()
+      expect(Handler.prototype.authenticate).toHaveBeenCalled()
     })
 
     it('calls next', async () => {
@@ -140,22 +143,23 @@ describe('Server Middleware', () => {
 
     it('refreshes the token', async () => {
       const accessToken = 'validToken'
+      const expires = '2020-04-30T09:31:40.386Z'
 
-      Handler.prototype.updateToken.mockReturnValueOnce({ accessToken })
+      Handler.prototype.useRefreshToken.mockReturnValueOnce({ accessToken, expires })
 
       await middleware(req, res, next)
 
-      expect(Handler.prototype.updateToken).toHaveBeenCalled()
+      expect(Handler.prototype.useRefreshToken).toHaveBeenCalled()
       expect(res.writeHead).toHaveBeenCalledWith(200, { 'Content-Type': 'application/json' })
-      expect(res.end).toHaveBeenCalledWith(JSON.stringify({ accessToken }))
+      expect(res.end).toHaveBeenCalledWith(JSON.stringify({ accessToken, expires }))
     })
 
     it('returns 401 on invalid session', async () => {
-      Handler.prototype.updateToken.mockReturnValueOnce(null)
+      Handler.prototype.useRefreshToken.mockReturnValueOnce(null)
 
       await middleware(req, res, next)
 
-      expect(Handler.prototype.updateToken).toHaveBeenCalled()
+      expect(Handler.prototype.useRefreshToken).toHaveBeenCalled()
       expect(res.writeHead).toHaveBeenCalledWith(401, { 'Content-Type': 'application/json' })
       expect(res.end).toHaveBeenCalledWith(JSON.stringify({ error: INVALID_SESSION }))
     })
