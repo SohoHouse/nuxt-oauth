@@ -1,11 +1,11 @@
 import moment from 'moment'
 import OAuth from 'client-oauth2'
-import sessions from 'client-sessions'
+import sessions from 'cookie-session'
 import { btoa } from 'Base64'
 import Handler from '@/handler'
 
 jest.mock('client-oauth2')
-jest.mock('client-sessions', () => jest.fn(() => (req, res, resolve) => resolve()))
+jest.mock('cookie-session', () => jest.fn(() => (req, res, resolve) => resolve()))
 
 let req
 let res
@@ -64,7 +64,7 @@ beforeEach(() => {
   }
   reqWithSession = {
     ...req,
-    [options.sessionName]: {
+    session: {
       token,
       reset: jest.fn(),
       setDuration: jest.fn()
@@ -137,9 +137,10 @@ describe('Handler', () => {
       await handler.createSession()
 
       expect(sessions).toBeCalledWith({
-        duration: 86400000, // 1 day,
-        cookieName: options.sessionName,
-        secret: options.secretKey
+        maxAge: 86400000,
+        name: options.sessionName,
+        sameSite: 'lax',
+        secret: options.secretKey,
       })
     })
 
@@ -199,7 +200,7 @@ describe('Handler', () => {
       })
 
       it('saves the token details to the session and the request', () => {
-        expect(handler.req[options.sessionName].token).toEqual(savedSession)
+        expect(handler.req.session.token).toEqual(savedSession)
         expect(handler.req.accessToken).toEqual(savedSession.accessToken)
       })
 
@@ -209,7 +210,7 @@ describe('Handler', () => {
       })
 
       it('saves the user to the session and the request', () => {
-        expect(handler.req[options.sessionName].user).toEqual(user)
+        expect(handler.req.session.user).toEqual(user)
         expect(handler.req.user).toEqual(user)
       })
     })
@@ -230,7 +231,7 @@ describe('Handler', () => {
       })
 
       it('resets the session', () => {
-        expect(handler.req[options.sessionName].reset).toHaveBeenCalled()
+        expect(handler.req.session).toBeNull;
       })
 
       it('does not fetch the user', () => {
@@ -445,8 +446,7 @@ describe('Handler', () => {
     })
 
     it('resets the session', () => {
-      expect(handler.req[options.sessionName].reset).toHaveBeenCalled()
-      expect(handler.req[options.sessionName].setDuration).toHaveBeenCalledWith(0)
+      expect(handler.req.session).toBeNull()
     })
 
     it('it calls the logout callback', () => {

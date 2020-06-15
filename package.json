@@ -16,7 +16,7 @@
   "dependencies": {
     "Base64": "^1.0.1",
     "client-oauth2": "^4.1.0",
-    "client-sessions": "^0.8.0",
+    "cookie-session": "^1.4.0",
     "qs": "^6.5.0",
     "url-join": "^4.0.0"
   },
