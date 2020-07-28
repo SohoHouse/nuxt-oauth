@@ -570,4 +570,58 @@ describe('Handler', () => {
       expect(handler.extractToken()).toBeNull()
     })
   })
+
+  describe('#setTokens', () => {
+    let handler
+    const accessToken = 'abc123'
+    const refreshToken = '12345'
+    const redirectUrl = 'http://google.com'
+
+    beforeEach(() => {
+      req.url = `/auth/tokens?accessToken=${accessToken}&refreshToken=${refreshToken}&redirectUrl=${redirectUrl}`
+
+      handler = new Handler({ req, res, options })
+
+      handler.createSession = jest.fn(async () => {})
+      handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
+      handler.saveData = jest.fn(async () => {})
+      handler.redirect = jest.fn()
+    })
+
+    it('creates a session', async () => {
+      await handler.setTokens()
+
+      expect(handler.createSession).toHaveBeenCalled()
+    })
+
+    it('creates a token', async () => {
+      await handler.setTokens()
+
+      expect(handler.auth.createToken).toHaveBeenCalledWith(accessToken, refreshToken, 'bearer')
+    })
+
+    it('refreshes the token', async () => {
+      await handler.setTokens()
+
+      expect(mockToken.refresh).toHaveBeenCalled()
+    })
+
+    it('saves the token', async () => {
+      await handler.setTokens()
+
+      expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
+    })
+
+    it('redirects', async () => {
+      await handler.setTokens()
+
+      expect(handler.redirect).toHaveBeenCalledWith(redirectUrl)
+    })
+
+    it('returns null if there is a problem', () => {
+      handler.auth.createToken.mockRejectedValue(new Error())
+
+      return expect(handler.setTokens()).resolves.toBeNull()
+    })
+  })
 })

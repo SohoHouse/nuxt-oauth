@@ -164,4 +164,34 @@ describe('Server Middleware', () => {
       expect(res.end).toHaveBeenCalledWith(JSON.stringify({ error: INVALID_SESSION }))
     })
   })
+
+  describe('for /auth/tokens', () => {
+    beforeEach(() => {
+      req.url = '/auth/tokens'
+      Handler.prototype.isRoute = jest.fn(route => route === 'tokens')
+    })
+
+    it('does not call next', async () => {
+      await middleware(req, res, next)
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('refreshes the token', async () => {
+      Handler.prototype.setTokens.mockReturnValueOnce(true)
+
+      await middleware(req, res, next)
+
+      expect(Handler.prototype.setTokens).toHaveBeenCalled()
+    })
+
+    it('returns 401 on invalid session', async () => {
+      Handler.prototype.setTokens.mockReturnValueOnce(null)
+
+      await middleware(req, res, next)
+
+      expect(Handler.prototype.setTokens).toHaveBeenCalled()
+      expect(res.writeHead).toHaveBeenCalledWith(401, { 'Content-Type': 'application/json' })
+      expect(res.end).toHaveBeenCalledWith(JSON.stringify({ error: INVALID_SESSION }))
+    })
+  })
 })
