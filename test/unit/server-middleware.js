@@ -166,8 +166,11 @@ describe('Server Middleware', () => {
   })
 
   it('adds a setTokens method to the request', async () => {
-    await middleware(req, res, next)
+    Handler.prototype.setTokens = jest.fn()
 
-    expect(req.oauth).toHaveProperty('setTokens', expect.any(Function))
+    await middleware(req, res, next)
+    req.oauth.setTokens()
+
+    expect(Handler.prototype.setTokens).toHaveBeenCalled()
   })
 })
