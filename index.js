@@ -17,7 +17,7 @@ module.exports = function NuxtOAuth (moduleOptions) {
   if (options.scopes && !Array.isArray(options.scopes)) throw new Error('options.scopes must be an array')
 
   // Setup middlewares
-  this.addServerMiddleware(base(options))
+  this.options.serverMiddleware.unshift(base(options))
   this.addPlugin({
     src: resolve(__dirname, 'lib/plugin.js'),
     fileName: 'nuxt-oauth.plugin.js',

@@ -575,11 +575,8 @@ describe('Handler', () => {
     let handler
     const accessToken = 'abc123'
     const refreshToken = '12345'
-    const redirectUrl = 'http://google.com'
 
     beforeEach(() => {
-      req.url = `/auth/tokens?accessToken=${accessToken}&refreshToken=${refreshToken}&redirectUrl=${redirectUrl}`
-
       handler = new Handler({ req, res, options })
 
       handler.createSession = jest.fn(async () => {})
@@ -595,7 +592,7 @@ describe('Handler', () => {
     })
 
     it('creates a token', async () => {
-      await handler.setTokens()
+      await handler.setTokens(accessToken, refreshToken)
 
       expect(handler.auth.createToken).toHaveBeenCalledWith(accessToken, refreshToken, 'bearer')
     })
@@ -610,18 +607,6 @@ describe('Handler', () => {
       await handler.setTokens()
 
       expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
-    })
-
-    it('redirects', async () => {
-      await handler.setTokens()
-
-      expect(handler.redirect).toHaveBeenCalledWith(redirectUrl)
-    })
-
-    it('returns null if there is a problem', () => {
-      handler.auth.createToken.mockRejectedValue(new Error())
-
-      return expect(handler.setTokens()).resolves.toBeNull()
     })
   })
 })
