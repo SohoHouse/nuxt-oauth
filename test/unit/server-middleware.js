@@ -164,4 +164,13 @@ describe('Server Middleware', () => {
       expect(res.end).toHaveBeenCalledWith(JSON.stringify({ error: INVALID_SESSION }))
     })
   })
+
+  it('adds a setTokens method to the request', async () => {
+    Handler.prototype.setTokens = jest.fn()
+
+    await middleware(req, res, next)
+    req.oauth.setTokens()
+
+    expect(Handler.prototype.setTokens).toHaveBeenCalled()
+  })
 })
