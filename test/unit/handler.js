@@ -313,6 +313,12 @@ describe('Handler', () => {
       expect(returnedToken).toEqual(mockToken)
     })
 
+    it('returns null without accessToken', async () => {
+      handler.getSessionToken.mockReturnValueOnce({})
+      const result = await handler.authenticate()
+      expect(result).toBeNull()
+    })
+
     it('does nothing else if no token exists already', async () => {
       handler.req[options.sessionName] = {}
       handler.getSessionToken.mockReturnValueOnce({})
