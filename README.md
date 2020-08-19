@@ -92,18 +92,19 @@ export default {
 | `authorizationPath` |  | The path to redirect users to authenticate _(defaults to `/authorize`)_ |
 | `accessTokenPath` |  | The path to request the access token _(defaults to `/token`)_ |
 | `moduleName` |  | The name of the vuex module to be created by nuxt-oauth. _(defaults to `oauth`)_ |
+| `sessionDuration` |  | The duration of the login session. _(defaults to 24 hours)_ |
 | `onLogout` | | Optional hook which is called after logging out. E.g. can be used to perform a full log out on your OAuth provider. _Receives args `(req, res, redirectUrl)`.  Can be asynchronous (or return a promise)._ |
 | `fetchUser` | | Optional hook which is called when logging in to fetch your user object. _Receives args `(accessToken, request, options)`._ |
 | `testMode` | | Flag which tells the module to ignore the OAuth dance and log every one in _(see [here](#with-your-tests) for more)_. |
 | `pageComponentPath` | | Optional page component path to replace the default page provided by this library. |
-  
+
 #### Dynamic Configuration
 
 To dynamically set configuration at runtime, `oauthHost`, `oauthClientID`, `oauthClientSecret` can be strings but also can be `async` functions which accept `req` as their only argument. This can be useful to choose configuration based on the URL or headers of the request.
 
 ### Helpers
 
-You can also use the functionality manually. `nuxt-oauth` injects the following helpers into your store, components and `ctx.app`: **`$login`** and **`$logout`**. Use these to manually log your user in or out. 
+You can also use the functionality manually. `nuxt-oauth` injects the following helpers into your store, components and `ctx.app`: **`$login`** and **`$logout`**. Use these to manually log your user in or out.
 
 Following a successful login/logout, your user will be redirected back to the page from which the helper was called (you can pass a `redirectUrl` to the helpers to override this). For a full example, see below.
 
@@ -140,7 +141,7 @@ Following a successful login/logout, your user will be redirected back to the pa
   }
 </script>
 ```
-  
+
 ### With your tests
 
 Set `options.oauth.testMode` to `true` to tell the module to skip authentication. Using this, along with the `fetchUser` option, can be helpful in e2e tests to stub your test users.
