@@ -295,12 +295,17 @@ describe('Handler', () => {
   describe('#authenticate', () => {
     let handler
 
-    beforeEach(() => {
+    const createTestHandler = () => {
       handler = new Handler({ req: reqWithSession, res, options })
       handler.createSession = jest.fn().mockResolvedValue(null)
       handler.saveData = jest.fn().mockResolvedValue(null)
       handler.getSessionToken = jest.fn().mockReturnValue(token)
       handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
+      return handler
+    }
+
+    beforeEach(() => {
+      handler = createTestHandler()
     })
 
     it('creates a session', async () => {
@@ -342,6 +347,18 @@ describe('Handler', () => {
       await handler.authenticate()
       expect(mockToken.refresh).toHaveBeenCalled()
       expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
+    })
+
+    describe('when there is no refresh token', () => {
+      beforeEach(() => {
+        delete token.refreshToken
+        handler = createTestHandler()
+      })
+
+      it('authenticates successfully', async () => {
+        const result = await handler.authenticate()
+        expect(result).not.toEqual(null)
+      })
     })
   })
 
