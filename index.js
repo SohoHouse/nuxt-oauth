@@ -6,7 +6,8 @@ const defaultOptions = {
   fetchUser: () => ({}),
   onLogout: () => {},
   scopes: [],
-  pageComponentPath: resolve(__dirname, './lib/route.js')
+  pageComponentPath: resolve(__dirname, './lib/route.js'),
+  duration: 24 * 60 * 60 * 1000
 }
 
 module.exports = function NuxtOAuth (moduleOptions) {
