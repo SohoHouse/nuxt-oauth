@@ -39,6 +39,7 @@ yarn add nuxt-oauth
 modules: ['nuxt-oauth'],
 oauth: {
   sessionName: 'mySession',
+  duration: 24 * 60 * 60 * 1000,
   secretKey: process.env.SECRET_KEY,
   oauthHost: process.env.OAUTH_HOST,
   oauthClientID: process.env.OAUTH_CLIENT_ID,
