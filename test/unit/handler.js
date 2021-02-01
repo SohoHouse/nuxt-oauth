@@ -39,6 +39,7 @@ beforeEach(() => {
     accessTokenPath: '/token2',
     sessionName: 'testSession',
     secretKey: 'sekret',
+    duration: 24 * 60 * 60 * 1000,
     fetchUser: jest.fn(() => user),
     onLogout: jest.fn(() => {})
   }
@@ -137,7 +138,7 @@ describe('Handler', () => {
       await handler.createSession()
 
       expect(sessions).toBeCalledWith({
-        duration: 86400000, // 1 day,
+        duration: options.duration,
         cookieName: options.sessionName,
         secret: options.secretKey
       })
