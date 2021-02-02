@@ -3843,6 +3843,14 @@ eslint-config-airbnb@^18.0.1:
     object.assign "^4.1.0"
     object.entries "^1.1.0"
 
+eslint-import-resolver-jest@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-import-resolver-jest/-/eslint-import-resolver-jest-3.0.0.tgz#fd61da30fe58f4c1074af1f069b4267c70a91fd6"
+  integrity sha512-dCrepGDfaI5cK1QeUhUSbrkDalFkFGXyvjsfWyDxg1uPWiwsGpGmK6GFVPS4mn/IAYLipquB9AHonGQP/iaOAQ==
+  dependencies:
+    find-root "^1.1.0"
+    resolve "^1.12.0"
+
 "eslint-import-resolver-jest@https://github.com/samtgarson/eslint-import-resolver-jest":
   version "1.0.0"
   resolved "https://github.com/samtgarson/eslint-import-resolver-jest#e4a454c30fa45b86a7219852576eb1bd37721756"
@@ -4386,7 +4394,7 @@ find-cache-dir@^3.0.0:
     make-dir "^3.0.0"
     pkg-dir "^4.1.0"
 
-find-root@^1.0.0:
+find-root@^1.0.0, find-root@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/find-root/-/find-root-1.1.0.tgz#abcfc8ba76f708c42a97b3d685b7e9450bfb9ce4"
   integrity sha512-NKfW6bec6GfKc0SGx1e07QZY9PE99u0Bft/0rzSD5k3sO/vwkVUpDUKVm5Gpp5Ue3YfShPFTX2070tDs5kB9Ng==
