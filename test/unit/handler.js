@@ -281,7 +281,7 @@ describe('Handler', () => {
     it('saves the token', async () => {
       await handler.updateToken()
       expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
+      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer', { expires_in: token.expires })
       expect(handler.saveData).toHaveBeenCalledWith(mockToken)
     })
 
@@ -339,7 +339,7 @@ describe('Handler', () => {
     it('saves the token', async () => {
       await handler.authenticate()
       expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
+      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer', { expires_in: token.expires })
       expect(handler.saveData).toHaveBeenCalledWith(mockToken)
     })
 
