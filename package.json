@@ -1,11 +1,14 @@
 {
   "name": "nuxt-oauth",
-  "version": "2.9.1",
+  "version": "2.9.2",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
   "author": "samtgarson@gmail.com",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://nexus.infra.sohohousedigital.com/repository/npm-private"
+  },
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "jest ./test/unit",
