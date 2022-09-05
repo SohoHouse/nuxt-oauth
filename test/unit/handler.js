@@ -289,10 +289,13 @@ describe('Handler', () => {
     })
 
     it('saves the token', async () => {
-      await handler.authenticate()
+      const result = await handler.authenticate()
+      const { expires } = token
+      const expires_in = moment(expires).diff(moment(), 'seconds').valueOf()
       expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
+      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer', { expires_in })
       expect(handler.saveData).toHaveBeenCalledWith(mockToken)
+      expect(result).toBe(mockToken)
     })
 
     it('refreshes the token if its expired', async () => {
