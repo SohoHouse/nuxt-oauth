@@ -245,54 +245,6 @@ describe('Handler', () => {
     })
   })
 
-  // TODO - this function name was deprecated, but let's be kind and make sure it still works
-  describe('#updateToken', () => {
-    let handler
-
-    beforeEach(() => {
-      handler = new Handler({ req: reqWithSession, res, options })
-      handler.createSession = jest.fn().mockResolvedValue(null)
-      handler.saveData = jest.fn().mockResolvedValue(null)
-      handler.getSessionToken = jest.fn().mockReturnValue(token)
-      handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
-    })
-
-    it('creates a session', async () => {
-      await handler.updateToken()
-      expect(handler.createSession).toHaveBeenCalled()
-    })
-
-    it('returns the token', async () => {
-      const returnedToken = await handler.updateToken()
-      expect(returnedToken).toEqual(mockToken)
-    })
-
-    it('does nothing else if no token exists already', async () => {
-      handler.req[options.sessionName] = {}
-      handler.getSessionToken.mockReturnValueOnce({})
-
-      const sessionToken = await handler.updateToken()
-
-      expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.saveData).not.toHaveBeenCalled()
-      expect(sessionToken).toBeNull()
-    })
-
-    it('saves the token', async () => {
-      await handler.updateToken()
-      expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer')
-      expect(handler.saveData).toHaveBeenCalledWith(mockToken)
-    })
-
-    it('refreshes the token if its expired', async () => {
-      mockToken.expired.mockImplementationOnce(() => true)
-      await handler.updateToken()
-      expect(mockToken.refresh).toHaveBeenCalled()
-      expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
-    })
-  })
-
   describe('#authenticate', () => {
     let handler
 
