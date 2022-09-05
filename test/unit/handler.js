@@ -288,14 +288,22 @@ describe('Handler', () => {
       expect(sessionToken).toBeNull()
     })
 
-    it('saves the token', async () => {
-      const result = await handler.authenticate()
-      const { expires } = token
-      const expires_in = moment(expires).diff(moment(), 'seconds').valueOf()
-      expect(mockToken.refresh).not.toHaveBeenCalled()
-      expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer', { expires_in })
-      expect(handler.saveData).toHaveBeenCalledWith(mockToken)
-      expect(result).toBe(mockToken)
+    describe('should save the token', () => {
+      it ('when expires is in ISO format', async () => {
+        await handler.authenticate()
+        const { expires } = token
+        const expires_in = moment(expires).diff(moment(), 'seconds').valueOf()
+        expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer', { expires_in })
+        expect(handler.saveData).toHaveBeenCalledWith(mockToken)
+      })
+
+      it('when expires is in number format', async () => {
+        const expires_in = 60 * 60
+        token.expires = expires_in
+        await handler.authenticate()
+        expect(handler.auth.createToken).toHaveBeenCalledWith(token.accessToken, token.refreshToken, 'bearer', { expires_in })
+        expect(handler.saveData).toHaveBeenCalledWith(mockToken)
+      })
     })
 
     it('refreshes the token if its expired', async () => {
