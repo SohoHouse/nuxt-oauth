@@ -252,7 +252,7 @@ describe('Handler', () => {
       handler = new Handler({ req: reqWithSession, res, options })
       handler.createSession = jest.fn().mockResolvedValue(null)
       handler.saveData = jest.fn().mockResolvedValue(null)
-      handler.getSessionToken = jest.fn().mockReturnValue(token)
+      handler.getSessionToken = jest.fn(() => token)
       handler.auth.createToken = jest.fn().mockResolvedValue(mockToken)
       return handler
     }
