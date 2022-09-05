@@ -9,7 +9,7 @@
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "jest ./test/unit",
-    "test:e2e": "NODE_ENV=test jest ./test/e2e/index.js",
+    "test:e2e": "NODE_OPTIONS=--openssl-legacy-provider && NODE_ENV=test jest ./test/e2e/index.js",
     "test:lint": "eslint --ignore-path .gitignore .",
     "dev": "NODE_ENV=development nuxt -c ./test/e2e/fixture/nuxt.config.js"
   },
