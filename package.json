@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "2.9.3",
+  "version": "2.10.0",
   "description": "OAuth module for your Nuxt applications",
   "main": "index.js",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "Base64": "^1.0.1",
-    "client-oauth2": "^4.1.0",
+    "client-oauth2": "^4.3.3",
     "client-sessions": "^0.8.0",
     "qs": "^6.5.0",
     "url-join": "^4.0.0"
