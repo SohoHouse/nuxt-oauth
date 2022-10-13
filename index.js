@@ -26,7 +26,7 @@ module.exports = function NuxtOAuth (moduleOptions) {
     src: resolve(__dirname, 'lib/plugin.js'),
     fileName: 'nuxt-oauth.plugin.js',
     options: {
-      moduleName: options.moduleName
+      moduleName: options.moduleName,
     }
   })
 
