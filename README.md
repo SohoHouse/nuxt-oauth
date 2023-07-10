@@ -63,7 +63,7 @@ oauth: {
 
 export default {
   mounted () {
-    const { accessToken } = this.$store.state.oauth
+    const { accessToken, expires } = this.$store.state.oauth
     // fetch more details from somewhere...
   }
 }
