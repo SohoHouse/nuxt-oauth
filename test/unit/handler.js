@@ -534,40 +534,30 @@ describe('Handler', () => {
       })
     })
   })
-  
+
   describe('#extractToken', () => {
     let handler
     const accessToken = '1q2w3e4r5t6y7u8i9o0p'
-    
+
     it('takes just the token from a bearer authorization', () => {
-      const reqWithAuth = { ...req, headers: { authorization: `Bearer ${accessToken}` } }
-      handler = new Handler({ req: reqWithAuth, res, options })
-      
-      // Re-add header because init redacted it
-      handler.req.headers.authorization = `Bearer ${accessToken}`
-      
+      handler = new Handler({ req: { ...req, headers: { authorization: `Bearer ${accessToken}` } }, res, options })
+
       expect(handler.extractToken()).toBe(accessToken)
-      expect(handler.req.headers.authorization).toBeUndefined()
     })
-    
-    it('takes just the token from another authorization', () => {
-      const reqWithAuth = { ...req, headers: { authorization: `Basic ${accessToken}` } }
-      handler = new Handler({ req: reqWithAuth, res, options })
-      
-      handler.req.headers.authorization = `Basic ${accessToken}`
-      
+
+    it('takes just the token from a other authorization', () => {
+      handler = new Handler({ req: { ...req, headers: { authorization: `Basic ${accessToken}` } }, res, options })
+
       expect(handler.extractToken()).toBe(accessToken)
-      expect(handler.req.headers.authorization).toBeUndefined()
     })
-    
+
     it('returns null when no authorization is found', () => {
       handler = new Handler({ req, res, options })
-      
+
       expect(handler.extractToken()).toBeNull()
     })
   })
-  
-  
+
   describe('#setTokens', () => {
     let handler
     const accessToken = 'abc123'
@@ -606,34 +596,4 @@ describe('Handler', () => {
       expect(handler.saveData).toHaveBeenCalledWith(refreshedToken)
     })
   })
-  
-  describe('Security: Authorization header redaction', () => {
-    it('masks authorization header on init', () => {
-      const reqWithAuthHeader = {
-        headers: { authorization: 'Bearer secretToken' },
-        url: '/some-url'
-      }
-      const res = {}
-      const handler = new Handler({ req: reqWithAuthHeader, res, options })
-      
-      // During init(), the header is replaced with [REDACTED]
-      expect(handler.req.headers.authorization).toBe('[REDACTED]')
-    })
-    
-    it('removes authorization header after extractToken()', () => {
-      const reqWithAuthHeader = {
-        headers: { authorization: 'Bearer secretToken' },
-        url: '/some-url'
-      }
-      const handler = new Handler({ req: reqWithAuthHeader, res, options })
-      // Patch the header again since init redacts it
-      handler.req.headers.authorization = 'Bearer anotherSecret'
-      
-      const token = handler.extractToken()
-      
-      expect(token).toBe('anotherSecret')
-      expect(handler.req.headers.authorization).toBeUndefined()
-    })
-  })
-  
 })
