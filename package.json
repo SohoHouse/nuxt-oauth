@@ -1,79 +1,41 @@
 {
   "name": "nuxt-oauth",
-  "version": "2.10.1",
-  "description": "OAuth module for your Nuxt applications",
-  "main": "index.js",
+  "version": "3.0.0",
+  "description": "OAuth module for your Nuxt 4 applications",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
   "author": "samtgarson@gmail.com",
   "license": "MIT",
+  "type": "module",
+  "main": "./src/module.ts",
+  "types": "./src/types.ts",
+  "exports": {
+    ".": "./src/module.ts",
+    "./runtime/*": "./src/runtime/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "test": "yarn test:unit && yarn test:e2e",
-    "test:unit": "jest ./test/unit",
-    "test:e2e": "NODE_ENV=test jest ./test/e2e/index.js",
-    "test:lint": "eslint --ignore-path .gitignore .",
-    "dev": "NODE_ENV=development nuxt -c ./test/e2e/fixture/nuxt.config.js"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:lint": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
-    "Base64": "^1.0.1",
-    "client-oauth2": "^4.3.3",
-    "client-sessions": "^0.8.0",
-    "qs": "^6.5.0",
-    "url-join": "^4.0.0"
+    "@nuxt/kit": "^4.0.0",
+    "defu": "^6.1.4",
+    "ofetch": "^1.4.1"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
-    "@sohohouse/eslint-config": "^0.0.4",
-    "babel-eslint": "^10.0.3",
-    "babel-plugin-dynamic-import-node": "^2.3.0",
-    "babel-preset-env": "^1.6.0",
-    "dotenv": "^8.1.0",
-    "eslint": "^6.4.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-import-resolver-jest": "^3.0.0",
-    "eslint-plugin-html": "^3.2.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jest": "^20.0.3",
-    "eslint-plugin-node": "^5.1.1",
-    "eslint-plugin-promise": "^3.4.1",
-    "eslint-plugin-vue": "beta",
-    "jest": "^24.9.0",
-    "moment": "^2.18.1",
-    "nuxt": "^2.9.2",
-    "request-promise-native": "^1.0.5",
-    "vuex": "^3.0.0"
+    "@nuxt/test-utils": "^3.15.4",
+    "h3": "^1.13.0",
+    "nuxt": "4.4.8",
+    "vitest": "^2.1.8"
   },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "corejs": "2",
-          "useBuiltIns": "usage"
-        }
-      ]
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-object-rest-spread",
-      "babel-plugin-dynamic-import-node"
-    ]
-  },
-  "jest": {
-    "clearMocks": true,
-    "testMatch": [
-      "<rootDir>/test/**/*.js"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/test/e2e/fixture/"
-    ],
-    "moduleNameMapper": {
-      "^@/(.+)": "<rootDir>/lib/$1"
-    },
-    "testEnvironment": "node"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@sohohouse"
-    ]
+  "peerDependencies": {
+    "nuxt": "^3.0.0 || ^4.0.0"
   }
 }
