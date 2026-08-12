@@ -168,8 +168,9 @@ export const refreshSession = async (event: H3Event) => {
   }
 }
 
-export const logError = (e: unknown) =>
-  import.meta.dev && console.error('[nuxt-oauth]', e)
+export const logError = (e: unknown) => {
+  if (import.meta.dev) console.error('[nuxt-oauth]', e)
+}
 
 export const fakeToken = (): TokenResponse => ({
   access_token: 'accessToken',
