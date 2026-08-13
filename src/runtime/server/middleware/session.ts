@@ -1,7 +1,7 @@
 import { defineEventHandler, getRequestHeader } from 'h3'
 import {
-  getOptions,
-  getSession,
+  getOAuthOptions,
+  getOAuthSession,
   isExpired,
   logError,
   refreshSession,
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  const opts = getOptions(event)
+  const opts = getOAuthOptions(event)
   const bearer = getRequestHeader(event, 'authorization')?.split(' ')[1]
   const hasSessionCookie = (getRequestHeader(event, 'cookie') || '').includes(
     `${opts.sessionName}=`
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
       await saveToken(event, { access_token: bearer })
     }
 
-    const session = await getSession(event)
+    const session = await getOAuthSession(event)
     let { accessToken, expires, user } = session.data
 
     if (accessToken && isExpired(expires)) {

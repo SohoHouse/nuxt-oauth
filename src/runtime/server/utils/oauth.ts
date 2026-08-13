@@ -16,7 +16,7 @@ export interface TokenResponse {
   expires_in?: number
 }
 
-export const getOptions = (event: H3Event): ModuleOptions =>
+export const getOAuthOptions = (event: H3Event): ModuleOptions =>
   (useRuntimeConfig(event) as any).oauth as ModuleOptions
 
 /**
@@ -27,8 +27,8 @@ export const getOptions = (event: H3Event): ModuleOptions =>
 const sessionPassword = (secretKey: string) =>
   createHash('sha256').update(String(secretKey)).digest('hex')
 
-export const getSession = (event: H3Event) => {
-  const opts = getOptions(event)
+export const getOAuthSession = (event: H3Event) => {
+  const opts = getOAuthOptions(event)
   const config: SessionConfig = {
     name: opts.sessionName,
     password: sessionPassword(opts.secretKey),
@@ -49,7 +49,7 @@ const requestProtocol = (event: H3Event) =>
  * derivation from the request subdomain via `oauthDomain`.
  */
 export const resolveOAuthHost = async (event: H3Event): Promise<string> => {
-  const opts = getOptions(event)
+  const opts = getOAuthOptions(event)
   const result: { host: string | null } = { host: null }
   await useNitroApp().hooks.callHook('oauth:host', event, result)
   if (result.host) return result.host
@@ -104,7 +104,7 @@ export const exchangeToken = async (
   event: H3Event,
   params: Record<string, string>
 ): Promise<TokenResponse> => {
-  const opts = getOptions(event)
+  const opts = getOAuthOptions(event)
   const host = await resolveOAuthHost(event)
 
   return ofetch<TokenResponse>(`${host}${opts.accessTokenPath}`, {
@@ -120,7 +120,7 @@ export const exchangeToken = async (
 
 /** Persists a token to the session and resolves the user via the `oauth:fetchUser` hook. */
 export const saveToken = async (event: H3Event, token: TokenResponse) => {
-  const session = await getSession(event)
+  const session = await getOAuthSession(event)
   const expires = Date.now() + (token.expires_in ?? 1800) * 1000
 
   const result: { user: unknown } = { user: session.data.user ?? null }
@@ -169,7 +169,7 @@ export const isExpired = (expires?: number) =>
 
 /** Refreshes the session token in place. Returns null when refresh is impossible. */
 export const refreshSession = async (event: H3Event) => {
-  const session = await getSession(event)
+  const session = await getOAuthSession(event)
   const { refreshToken } = session.data
   if (!refreshToken) return null
 

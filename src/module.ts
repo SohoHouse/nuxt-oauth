@@ -4,7 +4,7 @@ import {
   addPlugin,
   addImports,
   addServerHandler,
-  addServerImportsDir,
+  addServerImports,
   addRouteMiddleware,
 } from '@nuxt/kit'
 import { defu } from 'defu'
@@ -76,8 +76,14 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    // Exposes setSessionTokens etc. to the app's own server routes.
-    addServerImportsDir(resolver.resolve('./runtime/server/utils'))
+    // Only the public helper is auto-imported. Registering the whole utils dir
+    // would make every export global and shadow h3's own getSession.
+    addServerImports([
+      {
+        name: 'setSessionTokens',
+        from: resolver.resolve('./runtime/server/utils/oauth.ts'),
+      },
+    ])
 
     addPlugin(resolver.resolve('./runtime/plugin.ts'))
 

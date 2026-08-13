@@ -3,14 +3,14 @@ import {
   buildRedirectUri,
   encodeState,
   fakeToken,
-  getOptions,
+  getOAuthOptions,
   resolveOAuthHost,
   sanitizeRedirect,
   saveToken,
 } from '../utils/oauth'
 
 export default defineEventHandler(async (event) => {
-  const opts = getOptions(event)
+  const opts = getOAuthOptions(event)
   const query = getQuery(event)
 
   // `redirect-url` is the historic name; `callbackUrl` is accepted for callers

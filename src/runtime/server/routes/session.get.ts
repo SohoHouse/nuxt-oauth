@@ -1,8 +1,8 @@
 import { defineEventHandler } from 'h3'
-import { getSession, isExpired, refreshSession } from '../utils/oauth'
+import { getOAuthSession, isExpired, refreshSession } from '../utils/oauth'
 
 export default defineEventHandler(async (event) => {
-  const session = await getSession(event)
+  const session = await getOAuthSession(event)
 
   if (!session.data.accessToken) return { authenticated: false }
 

@@ -1,13 +1,13 @@
 import { defineEventHandler, getQuery, sendRedirect } from 'h3'
 import { useNitroApp } from '#imports'
-import { getSession, logError, sanitizeRedirect } from '../utils/oauth'
+import { getOAuthSession, logError, sanitizeRedirect } from '../utils/oauth'
 
 export default defineEventHandler(async (event) => {
   const redirectUrl = sanitizeRedirect(
     getQuery(event)['redirect-url'] as string
   )
 
-  const session = await getSession(event)
+  const session = await getOAuthSession(event)
   await session.clear()
 
   // Lets the app sign the member out at the identity provider too — the
