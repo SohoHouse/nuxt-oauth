@@ -15,12 +15,12 @@ import type { OAuthContext } from '../../../types'
  * to learn it is authenticated and every guarded route bounces to login.
  */
 export default defineEventHandler(async (event) => {
- const path = event.path
+  const path = event.path
   if (
     path.startsWith('/_nuxt/') ||
     path.startsWith('/__nuxt_island') ||
-    path.startsWith('/auth/') ||
-    path.startsWith('/api/auth/')
+    path.startsWith('/auth') ||
+    path.startsWith('/api/auth')
   ) {
     return
   }
