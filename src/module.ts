@@ -4,6 +4,7 @@ import {
   addPlugin,
   addImports,
   addServerHandler,
+  addServerImportsDir,
   addRouteMiddleware,
 } from '@nuxt/kit'
 import { defu } from 'defu'
@@ -74,6 +75,9 @@ export default defineNuxtModule<ModuleOptions>({
         })
       }
     }
+
+    // Exposes setSessionTokens etc. to the app's own server routes.
+    addServerImportsDir(resolver.resolve('./runtime/server/utils'))
 
     addPlugin(resolver.resolve('./runtime/plugin.ts'))
 

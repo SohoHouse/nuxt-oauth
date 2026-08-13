@@ -147,6 +147,23 @@ export const saveToken = async (event: H3Event, token: TokenResponse) => {
   return { accessToken: token.access_token, expires, user: result.user }
 }
 
+/**
+ * Establishes a session from tokens obtained outside the OAuth dance — e.g.
+ * account creation, which signs the new member straight in. Replaces the Nuxt 2
+ * `req.oauth.setTokens(accessToken, refreshToken)`.
+ */
+export const setSessionTokens = (
+  event: H3Event,
+  accessToken: string,
+  refreshToken?: string,
+  expiresIn?: number
+) =>
+  saveToken(event, {
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    expires_in: expiresIn,
+  })
+
 export const isExpired = (expires?: number) =>
   !expires || expires - Date.now() < 60_000
 
