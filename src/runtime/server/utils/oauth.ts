@@ -169,7 +169,12 @@ export const refreshSession = async (event: H3Event) => {
 }
 
 export const logError = (e: unknown) => {
-  if (import.meta.dev) console.error('[nuxt-oauth]', e)
+  if (!import.meta.dev) return
+  // ofetch hides the provider's reason in response._data; surface it.
+  const err = e as any
+  console.error('[nuxt-oauth]', err?.message ?? err)
+  const body = err?.response?._data ?? err?.data
+  if (body) console.error('[nuxt-oauth] provider response:', body)
 }
 
 export const fakeToken = (): TokenResponse => ({
