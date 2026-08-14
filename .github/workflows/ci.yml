@@ -12,16 +12,14 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # nuxt@4 requires ^22.12.0 || ^24.11.0, and a transitive @babel/generator
+    # requires ^22.18.0 || >=24.11.0.
+    container:
+      image: node:24
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-
-    - name: Set up Node
-      uses: actions/setup-node@v4
-      with:
-        node-version-file: '.nvmrc'
-        cache: yarn
 
     - name: Install
       run: yarn install --frozen-lockfile
