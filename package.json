@@ -3,7 +3,6 @@
   "version": "3.0.0",
   "description": "OAuth module for your Nuxt 4 applications",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
-  "author": "samtgarson@gmail.com",
   "license": "MIT",
   "type": "module",
   "main": "./src/module.ts",
