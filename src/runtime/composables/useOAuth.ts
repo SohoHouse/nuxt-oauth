@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { useState, useRequestEvent, navigateTo } from '#app'
+import { useState, useRequestEvent, navigateTo, useRoute } from '#app'
 import type { OAuthContext } from '../../types'
 
 export const OAUTH_STATE_KEY = 'nuxt-oauth'

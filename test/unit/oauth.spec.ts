@@ -1,11 +1,31 @@
 import { describe, it, expect } from 'vitest'
+import type { H3Event } from 'h3'
 import {
+  authPrefix,
   decodeState,
   encodeState,
   fakeToken,
   isExpired,
   sanitizeRedirect,
 } from '../../src/runtime/server/utils/oauth'
+
+// authPrefix only reads event.path.
+const eventAt = (path: string) => ({ path }) as H3Event
+
+describe('authPrefix', () => {
+  it('keeps a request on the /auth mount', () => {
+    expect(authPrefix(eventAt('/auth/callback'))).toBe('/auth')
+  })
+
+  // Otherwise a failed callback on /api/auth bounces to the other mount.
+  it('keeps a request on the /api/auth mount', () => {
+    expect(authPrefix(eventAt('/api/auth/callback'))).toBe('/api/auth')
+  })
+
+  it('defaults to /auth for anything else', () => {
+    expect(authPrefix(eventAt('/'))).toBe('/auth')
+  })
+})
 
 describe('sanitizeRedirect', () => {
   it('keeps a same-origin path', () => {

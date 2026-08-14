@@ -68,14 +68,16 @@ export const resolveOAuthHost = async (event: H3Event): Promise<string> => {
 
 const stripSlash = (value: string) => value.replace(/\/+$/, '')
 
+/** Whichever prefix this request came in on, so redirects stay on it. */
+export const authPrefix = (event: H3Event) =>
+  event.path.startsWith('/api/auth') ? '/api/auth' : '/auth'
+
 /**
  * Builds the redirect URI from the *incoming* request, so it matches whichever
  * prefix the client entered on (`/auth` or `/api/auth`) and works on localhost.
  */
-export const buildRedirectUri = (event: H3Event) => {
-  const prefix = event.path.startsWith('/api/auth') ? '/api/auth' : '/auth'
-  return `${requestProtocol(event)}://${getRequestHost(event)}${prefix}/callback`
-}
+export const buildRedirectUri = (event: H3Event) =>
+  `${requestProtocol(event)}://${getRequestHost(event)}${authPrefix(event)}/callback`
 
 export const encodeState = (redirectUrl: string) =>
   Buffer.from(JSON.stringify({ redirectUrl }), 'utf8').toString('base64')

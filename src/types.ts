@@ -1,6 +1,7 @@
 export interface ModuleOptions {
   /**
-   * Static OAuth host, e.g. `https://auth.example.com/oauth`.
+   * Static OAuth host, without the path — e.g. `https://auth.example.com`.
+   * `oauthPath` is appended to it, so do not include that here.
    * When unset, the host is derived per-request from `oauthDomain`.
    */
   oauthHost?: string
