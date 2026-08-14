@@ -20,8 +20,7 @@
   },
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:lint": "eslint --ignore-path .gitignore ."
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nuxt/kit": "^4.0.0",

@@ -12,14 +12,19 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: node:16
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Run tests
-      run: |
-        yarn install
-        yarn test
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: yarn
+
+    - name: Install
+      run: yarn install --frozen-lockfile
+
+    - name: Test
+      run: yarn test
