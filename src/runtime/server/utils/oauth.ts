@@ -19,11 +19,7 @@ export interface TokenResponse {
 export const getOAuthOptions = (event: H3Event): ModuleOptions =>
   (useRuntimeConfig(event) as any).oauth as ModuleOptions
 
-/**
- * h3's `useSession` requires a >= 32 character password. Existing deployments
- * set SECRET_KEY to arbitrary (often shorter) values, so derive a stable
- * 64-char key from whatever is configured rather than crashing at runtime.
- */
+/** h3 requires a >= 32 char password, and SECRET_KEY is often shorter. */
 const sessionPassword = (secretKey: string) =>
   createHash('sha256').update(String(secretKey)).digest('hex')
 
@@ -41,20 +37,15 @@ const requestProtocol = (event: H3Event) =>
   getRequestHeader(event, 'x-forwarded-proto') ||
   (getRequestHost(event).startsWith('localhost') ? 'http' : 'https')
 
-/**
- * Resolves the OAuth host for this request.
- *
- * Order: the `oauth:host` Nitro hook (escape hatch replacing the old
- * `oauthHost(req)` function option), then the static `oauthHost`, then
- * derivation from the request subdomain via `oauthDomain`.
- */
+/** Resolution order: the `oauth:host` hook, then `oauthHost`, then `oauthDomain`. */
 export const resolveOAuthHost = async (event: H3Event): Promise<string> => {
   const opts = getOAuthOptions(event)
   const result: { host: string | null } = { host: null }
   await useNitroApp().hooks.callHook('oauth:host', event, result)
   if (result.host) return result.host
 
-  if (opts.oauthHost) return `${stripSlash(opts.oauthHost)}${opts.oauthPath}`
+  // Verbatim: oauthHost carries its own path.
+  if (opts.oauthHost) return stripSlash(opts.oauthHost)
 
   if (!opts.oauthDomain) {
     throw new Error(
@@ -72,10 +63,7 @@ const stripSlash = (value: string) => value.replace(/\/+$/, '')
 export const authPrefix = (event: H3Event) =>
   event.path.startsWith('/api/auth') ? '/api/auth' : '/auth'
 
-/**
- * Builds the redirect URI from the *incoming* request, so it matches whichever
- * prefix the client entered on (`/auth` or `/api/auth`) and works on localhost.
- */
+/** Built from the incoming request, so it matches on any host or prefix. */
 export const buildRedirectUri = (event: H3Event) =>
   `${requestProtocol(event)}://${getRequestHost(event)}${authPrefix(event)}/callback`
 
@@ -90,7 +78,7 @@ export const decodeState = (state?: string): string => {
     )
     return sanitizeRedirect(redirectUrl)
   } catch {
-    // Older clients (and the /api mount) may pass the path unencoded.
+    // Some callers pass the path unencoded.
     return sanitizeRedirect(state)
   }
 }
@@ -149,11 +137,7 @@ export const saveToken = async (event: H3Event, token: TokenResponse) => {
   return { accessToken: token.access_token, expires, user: result.user }
 }
 
-/**
- * Establishes a session from tokens obtained outside the OAuth dance — e.g.
- * account creation, which signs the new member straight in. Replaces the Nuxt 2
- * `req.oauth.setTokens(accessToken, refreshToken)`.
- */
+/** Signs a member in from tokens obtained elsewhere, e.g. account creation. */
 export const setSessionTokens = (
   event: H3Event,
   accessToken: string,

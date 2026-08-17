@@ -13,8 +13,7 @@ export default defineEventHandler(async (event) => {
   const opts = getOAuthOptions(event)
   const query = getQuery(event)
 
-  // `redirect-url` is the historic name; `callbackUrl` is accepted for callers
-  // written against the interim in-app routes.
+  // `callbackUrl` is accepted as an alias for `redirect-url`.
   const redirectUrl = sanitizeRedirect(
     (query['redirect-url'] as string) || (query.callbackUrl as string)
   )

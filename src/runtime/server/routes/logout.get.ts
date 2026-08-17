@@ -10,9 +10,8 @@ export default defineEventHandler(async (event) => {
   const session = await getOAuthSession(event)
   await session.clear()
 
-  // Lets the app sign the member out at the identity provider too — the
-  // replacement for the old `onLogout(req, res, redirectPath)` option.
-  // A handler that sends its own response ends the request here.
+  // Lets the app sign the member out at the provider too. A handler that sends
+  // its own response ends the request here.
   try {
     await useNitroApp().hooks.callHook('oauth:logout', event, redirectUrl)
   } catch (e) {

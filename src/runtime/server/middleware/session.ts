@@ -9,11 +9,7 @@ import {
 } from '../utils/oauth'
 import type { OAuthContext } from '../../../types'
 
-/**
- * Populates `event.context.oauth` on every render request so the Nuxt plugin
- * can hand the token to the client during SSR. Without this the app has no way
- * to learn it is authenticated and every guarded route bounces to login.
- */
+/** Puts the session on `event.context.oauth` so SSR can pass it to the client. */
 export default defineEventHandler(async (event) => {
   const path = event.path
   if (
@@ -35,8 +31,7 @@ export default defineEventHandler(async (event) => {
   if (!bearer && !hasSessionCookie) return
 
   try {
-    // A caller-supplied bearer token wins and is adopted into the session,
-    // matching the old `checkRequestAuthorization` behaviour.
+    // A caller-supplied bearer token wins, and is adopted into the session.
     if (bearer) {
       await saveToken(event, { access_token: bearer })
     }

@@ -12,8 +12,6 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    # nuxt@4 requires ^22.12.0 || ^24.11.0, and a transitive @babel/generator
-    # requires ^22.18.0 || >=24.11.0.
     container:
       image: node:24
 

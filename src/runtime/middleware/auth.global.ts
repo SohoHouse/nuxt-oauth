@@ -1,11 +1,7 @@
 import { defineNuxtRouteMiddleware } from '#app'
 import { useOAuthState, oauthRedirect } from '../composables/useOAuth'
 
-/**
- * Guards routes that opt in with `definePageMeta({ authenticated: true })`.
- * Replaces the Nuxt 2 guard that read `component.options.authenticated`, which
- * relied on the Vue 2 `_Ctor` internals.
- */
+/** Guards routes that opt in with `definePageMeta({ authenticated: true })`. */
 export default defineNuxtRouteMiddleware((to) => {
   const authenticated =
     typeof to.meta.authenticated === 'function'

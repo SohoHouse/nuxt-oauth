@@ -4,10 +4,7 @@ import type { OAuthContext } from '../../types'
 
 export const OAUTH_STATE_KEY = 'nuxt-oauth'
 
-/**
- * Session state, transferred from the server via the Nuxt payload.
- * Populated by the module's `session` server middleware.
- */
+/** Session state, put here by the server middleware and sent via the payload. */
 export const useOAuthState = () =>
   useState<OAuthContext>(OAUTH_STATE_KEY, () => {
     const event = useRequestEvent()
@@ -23,10 +20,7 @@ export const useOAuthState = () =>
 const buildUrl = (action: 'login' | 'logout', redirectUrl: string) =>
   `/auth/${action}?redirect-url=${encodeURIComponent(redirectUrl)}`
 
-/**
- * Leaves the SPA for the OAuth provider. On the client this must be a full
- * document navigation, not a router push, so the server can set the cookie.
- */
+/** A full document navigation, not a router push, so the server can set the cookie. */
 export const oauthRedirect = (
   action: 'login' | 'logout',
   redirectUrl: string
