@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "paths": {
+      // `#app` and `#imports` are aliases Nuxt and Nitro create at build time.
+      // They do not exist on disk, so TypeScript needs pointing at the real
+      // declarations or every runtime file reports TS2307.
+      "#app": ["./node_modules/nuxt/dist/app/index"],
+      "#app/*": ["./node_modules/nuxt/dist/app/*"],
+      "#imports": ["./node_modules/nitropack/dist/runtime/index"]
+    }
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}
