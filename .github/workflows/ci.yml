@@ -33,6 +33,7 @@ jobs:
 
     # Consumers' Rollup builds don't transpile node_modules — catch a stray TS construct here.
     - name: Verify build output is plain JS
+      shell: bash
       run: |
         shopt -s globstar
         node --check dist/module.mjs
