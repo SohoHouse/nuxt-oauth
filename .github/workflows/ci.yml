@@ -6,21 +6,27 @@ on:
       - '**'
 
 concurrency:
-   group: ${{ github.workflow }}-${{ github.ref }}
-   cancel-in-progress: ${{ (github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ (github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    container:
+  test_and_publish:
+    uses: SohoHouse/github-actions/.github/workflows/build_code.yml@v1
+    secrets: inherit
+    with:
       image: node:24
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Install
-      run: yarn install --frozen-lockfile
-
-    - name: Test
-      run: yarn test
+      cache_folders: |
+        node_modules
+      commands: |
+        echo "_auth = $NPM_AUTH" >> .npmrc
+        yarn install --frozen-lockfile
+        echo "----------yarn test----------"
+        yarn test
+        echo "---------------yarn publish---------------"
+        npm config set registry "https://nexus.infra.sohohousedigital.com/repository/npm-private/"
+        if [ "${{ github.ref }}" = "${{ format('refs/heads/{0}', github.event.repository.default_branch) }}" ]; then
+          echo "publish package"
+          yarn publish
+        else
+          echo "there is no need to publish package from feature branch"
+        fi
