@@ -31,9 +31,7 @@ jobs:
     - name: Build
       run: yarn build
 
-    # Consuming apps bundle dist/ with Rollup, which does not apply a
-    # TypeScript loader to node_modules — a stray TS construct here only
-    # breaks their build, not this one. Catch it before it ships.
+    # Consumers' Rollup builds don't transpile node_modules — catch a stray TS construct here.
     - name: Verify build output is plain JS
       run: |
         shopt -s globstar

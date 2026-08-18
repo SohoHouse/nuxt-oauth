@@ -59,9 +59,7 @@ export default defineNuxtModule<ModuleOptions>({
       options
     )
 
-    // Extensionless: the built package resolves these to dist/**/*.js, while
-    // local dev against src/ resolves them to *.ts. A hardcoded .ts here would
-    // 404 once the module ships as dist/**/*.js.
+    // Extensionless: resolves to *.ts in src/ (dev) or *.js in dist/ (built).
 
     // Populates event.context.oauth for SSR.
     addServerHandler({
@@ -80,8 +78,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    // Only the public helper is auto-imported. Registering the whole utils dir
-    // would make every export global and shadow h3's own getSession.
+    // Only the public helper is auto-imported, so it can't shadow h3's getSession.
     addServerImports([
       {
         name: 'setSessionTokens',
