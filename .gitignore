@@ -2,3 +2,5 @@ node_modules
 .nuxt
 yarn-error.log
 .env
+dist
+*.tgz

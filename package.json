@@ -1,24 +1,29 @@
 {
   "name": "nuxt-oauth",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "OAuth module for your Nuxt 4 applications",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
   "license": "MIT",
   "type": "module",
-  "main": "./src/module.ts",
-  "types": "./src/types.ts",
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.mts",
   "exports": {
-    ".": "./src/module.ts",
-    "./runtime/*": "./src/runtime/*",
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    },
+    "./runtime/*": "./dist/runtime/*",
     "./package.json": "./package.json"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
+    "build": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -29,11 +34,12 @@
     "ofetch": "^1.4.1"
   },
   "devDependencies": {
+    "@nuxt/module-builder": "^1.0.3",
     "@nuxt/test-utils": "^3.15.4",
     "@types/node": "^26.2.0",
     "h3": "^1.13.0",
     "nuxt": "4.4.8",
-    "typescript": "^7.0.2",
+    "typescript": "5.9.3",
     "vitest": "^2.1.8"
   },
   "peerDependencies": {
