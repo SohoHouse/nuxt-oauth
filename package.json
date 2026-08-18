@@ -23,6 +23,7 @@
   },
   "scripts": {
     "build": "nuxt-module-build build",
+    "dev:prepare": "nuxt-module-build build --stub",
     "prepack": "nuxt-module-build build",
     "test": "vitest run",
     "test:watch": "vitest",
