@@ -22,5 +22,19 @@ jobs:
     - name: Install
       run: yarn install --frozen-lockfile
 
+    - name: Typecheck
+      run: yarn typecheck
+
     - name: Test
       run: yarn test
+
+    - name: Build
+      run: yarn build
+
+    # Consumers' Rollup builds don't transpile node_modules — catch a stray TS construct here.
+    - name: Verify build output is plain JS
+      shell: bash
+      run: |
+        shopt -s globstar
+        node --check dist/module.mjs
+        for f in dist/runtime/**/*.js; do node --check "$f"; done

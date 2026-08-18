@@ -59,10 +59,12 @@ export default defineNuxtModule<ModuleOptions>({
       options
     )
 
+    // Extensionless: resolves to *.ts in src/ (dev) or *.js in dist/ (built).
+
     // Populates event.context.oauth for SSR.
     addServerHandler({
       middleware: true,
-      handler: resolver.resolve('./runtime/server/middleware/session.ts'),
+      handler: resolver.resolve('./runtime/server/middleware/session'),
     })
 
     // Mounted under every configured prefix so either registered redirect URI works.
@@ -71,29 +73,28 @@ export default defineNuxtModule<ModuleOptions>({
         addServerHandler({
           route: `${prefix}/${route}`,
           method: 'get',
-          handler: resolver.resolve(`./runtime/server/routes/${route}.get.ts`),
+          handler: resolver.resolve(`./runtime/server/routes/${route}.get`),
         })
       }
     }
 
-    // Only the public helper is auto-imported. Registering the whole utils dir
-    // would make every export global and shadow h3's own getSession.
+    // Only the public helper is auto-imported, so it can't shadow h3's getSession.
     addServerImports([
       {
         name: 'setSessionTokens',
-        from: resolver.resolve('./runtime/server/utils/oauth.ts'),
+        from: resolver.resolve('./runtime/server/utils/oauth'),
       },
     ])
 
-    addPlugin(resolver.resolve('./runtime/plugin.ts'))
+    addPlugin(resolver.resolve('./runtime/plugin'))
 
     addRouteMiddleware({
       name: 'nuxt-oauth-auth',
-      path: resolver.resolve('./runtime/middleware/auth.global.ts'),
+      path: resolver.resolve('./runtime/middleware/auth.global'),
       global: true,
     })
 
-    const composables = resolver.resolve('./runtime/composables/useOAuth.ts')
+    const composables = resolver.resolve('./runtime/composables/useOAuth')
     addImports([
       { name: 'useOAuth', from: composables },
       { name: 'useOAuthState', from: composables },
