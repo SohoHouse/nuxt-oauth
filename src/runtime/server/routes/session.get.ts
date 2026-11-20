@@ -1,4 +1,4 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler } from 'nuxt/server'
 import { getOAuthSession, isExpired, refreshSession } from '../utils/oauth'
 
 export default defineEventHandler(async (event) => {

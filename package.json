@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "OAuth module for your Nuxt 4 applications",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
   "license": "MIT",
@@ -38,12 +38,11 @@
     "@nuxt/module-builder": "^1.0.3",
     "@nuxt/test-utils": "^4.1.0",
     "@types/node": "^26.2.0",
-    "h3": "^1.13.0",
-    "nuxt": "4.5.2",
+    "nuxt": "^4.6.2",
     "typescript": "5.9.3",
     "vitest": "^4.1.10"
   },
   "peerDependencies": {
-    "nuxt": "^3.0.0 || ^4.0.0"
+    "nuxt": "^4.6.0 || ^5.0.0"
   }
 }

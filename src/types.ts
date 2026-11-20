@@ -34,7 +34,8 @@ export interface ModuleOptions {
   testMode: boolean
 }
 
-export interface OAuthSessionData {
+// A type alias, not an interface: session data needs an implicit index signature.
+export type OAuthSessionData = {
   accessToken?: string
   refreshToken?: string | null
   expires?: number

@@ -16,7 +16,7 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-oauth',
     configKey: 'oauth',
-    compatibility: { nuxt: '>=3.0.0' },
+    compatibility: { nuxt: '>=4.6.0' },
   },
 
   defaults: {
@@ -78,7 +78,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    // Only the public helper is auto-imported, so it can't shadow h3's getSession.
+    // Only the public helper is auto-imported, so it can't shadow `getSession` from `nuxt/server`.
     addServerImports([
       {
         name: 'setSessionTokens',
