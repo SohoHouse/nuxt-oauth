@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery, sendRedirect } from 'h3'
+import { defineEventHandler, getQuery, sendRedirect } from 'nuxt/server'
 import {
   authPrefix,
   buildRedirectUri,

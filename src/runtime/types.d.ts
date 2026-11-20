@@ -1,24 +1,29 @@
-import type { H3Event } from 'h3'
+import type { RequestEvent } from 'nuxt/server'
 import type { OAuthContext } from '../types'
 
-declare module 'h3' {
-  interface H3EventContext {
+declare module 'nuxt/schema' {
+  interface RequestEventContext {
     oauth?: OAuthContext
   }
-}
 
-declare module 'nitropack' {
-  interface NitroRuntimeHooks {
+  interface NuxtServerHooks {
     /** Override the OAuth host per-request. Set `result.host` to take effect. */
-    'oauth:host': (event: H3Event, result: { host: string | null }) => void
+    'oauth:host': (event: RequestEvent, result: { host: string | null }) => void
     /** Resolve the member for a freshly issued token. Set `result.user`. */
     'oauth:fetchUser': (
-      event: H3Event,
+      event: RequestEvent,
       accessToken: string,
       result: { user: unknown }
-    ) => void
-    /** Sign the member out at the identity provider. May send its own response. */
-    'oauth:logout': (event: H3Event, redirectUrl: string) => void
+    ) => void | Promise<void>
+    /**
+     * Sign the member out at the identity provider. Set `result.redirect` to
+     * send the member there instead of `redirectUrl`.
+     */
+    'oauth:logout': (
+      event: RequestEvent,
+      redirectUrl: string,
+      result: { redirect: string | null }
+    ) => void | Promise<void>
   }
 }
 

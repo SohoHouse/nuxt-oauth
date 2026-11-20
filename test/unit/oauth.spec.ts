@@ -1,16 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import type { H3Event } from 'h3'
+import type { RequestEvent } from 'nuxt/server'
 import {
   authPrefix,
   decodeState,
   encodeState,
   fakeToken,
+  isAuthPath,
   isExpired,
   sanitizeRedirect,
 } from '../../src/runtime/server/utils/oauth'
 
-// authPrefix only reads event.path.
-const eventAt = (path: string) => ({ path }) as H3Event
+// authPrefix only reads event.url.
+const eventAt = (path: string) =>
+  ({ url: new URL(path, 'http://localhost') }) as RequestEvent
 
 describe('authPrefix', () => {
   it('keeps a request on the /auth mount', () => {
@@ -24,6 +26,30 @@ describe('authPrefix', () => {
 
   it('defaults to /auth for anything else', () => {
     expect(authPrefix(eventAt('/'))).toBe('/auth')
+  })
+})
+
+describe('isAuthPath', () => {
+  it('matches the mount itself and anything below it', () => {
+    expect(isAuthPath('/auth')).toBe(true)
+    expect(isAuthPath('/auth/login')).toBe(true)
+    expect(isAuthPath('/api/auth/callback')).toBe(true)
+  })
+
+  // An app page that merely starts with "/auth" must keep its session.
+  it('does not match a sibling path sharing the prefix', () => {
+    expect(isAuthPath('/authors')).toBe(false)
+    expect(isAuthPath('/authentication-help')).toBe(false)
+    expect(isAuthPath('/api/authors')).toBe(false)
+  })
+
+  it('follows configured prefixes instead of the defaults', () => {
+    expect(isAuthPath('/sso/login', ['/sso'])).toBe(true)
+    expect(isAuthPath('/auth/login', ['/sso'])).toBe(false)
+  })
+
+  it('ignores a trailing slash on a configured prefix', () => {
+    expect(isAuthPath('/sso/login', ['/sso/'])).toBe(true)
   })
 })
 
