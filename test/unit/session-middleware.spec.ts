@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { NuxtServerHooks } from 'nuxt/schema'
 import type { RequestEvent } from 'nuxt/server'
 
 const getOAuthSession = vi.fn()
+const saveToken = vi.fn()
 
 vi.mock('nuxt/server', async (importOriginal) => ({
   ...(await importOriginal<typeof import('nuxt/server')>()),
@@ -18,8 +20,12 @@ vi.mock('../../src/runtime/server/utils/oauth', async (importOriginal) => ({
     routePrefixes: ['/auth', '/api/auth'],
   }),
   getOAuthSession: (...args: unknown[]) => getOAuthSession(...args),
+  // saveToken reaches the real session through its own module binding, so it
+  // is stubbed here rather than through getOAuthSession.
+  saveToken: (...args: unknown[]) => saveToken(...args),
 }))
 
+const { useServerHooks } = await import('nuxt/server')
 const { default: middleware } = await import(
   '../../src/runtime/server/middleware/session'
 )
@@ -77,5 +83,89 @@ describe('session middleware', () => {
     await run()
     expect(getOAuthSession).not.toHaveBeenCalled()
     expect(event.context.oauth).toBeUndefined()
+  })
+})
+
+describe('session middleware bearer tokens', () => {
+  const unregister: Array<() => void> = []
+  const verifyToken = vi.fn<NuxtServerHooks['oauth:verifyToken']>()
+
+  beforeEach(() => {
+    saveToken.mockReset()
+    verifyToken.mockReset()
+    getOAuthSession.mockReset()
+    getOAuthSession.mockResolvedValue({
+      data: { accessToken: 'held', expires: Date.now() + 3_600_000, user: {} },
+      clear: vi.fn(),
+    })
+    unregister.push(useServerHooks().hook('oauth:verifyToken', verifyToken))
+  })
+
+  afterEach(() => {
+    unregister.splice(0).forEach((off) => off())
+  })
+
+  const bearer = (token: string, cookie = 'other=1') =>
+    request('/planner', { authorization: `Bearer ${token}`, cookie })
+
+  // The app's own routes treat event.context.oauth as proof of sign-in.
+  it('ignores a bearer token that no handler vouches for', async () => {
+    const { event, run } = bearer('forged')
+    await run()
+    expect(verifyToken).toHaveBeenCalledWith(
+      event,
+      'forged',
+      expect.objectContaining({ valid: false })
+    )
+    expect(event.context.oauth).toBeUndefined()
+    expect(saveToken).not.toHaveBeenCalled()
+    // No session behind the request, so nothing is read or sealed either.
+    expect(getOAuthSession).not.toHaveBeenCalled()
+  })
+
+  it('ignores a bearer token when no handler is registered at all', async () => {
+    unregister.splice(0).forEach((off) => off())
+    const { event, run } = bearer('forged')
+    await run()
+    expect(event.context.oauth).toBeUndefined()
+    expect(saveToken).not.toHaveBeenCalled()
+  })
+
+  it('adopts a bearer token once a handler vouches for it', async () => {
+    verifyToken.mockImplementation((_event, _token, result) => {
+      result.valid = true
+    })
+    const { event, run } = bearer('good')
+    await run()
+    expect(saveToken).toHaveBeenCalledWith(event, { access_token: 'good' })
+    expect(event.context.oauth).toMatchObject({ accessToken: 'held' })
+  })
+
+  it('treats a throwing handler as a rejection', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    verifyToken.mockImplementation(() => {
+      throw new Error('api down')
+    })
+    const { event, run } = bearer('good')
+    await run()
+    expect(event.context.oauth).toBeUndefined()
+    expect(saveToken).not.toHaveBeenCalled()
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
+  it('does not verify the token its session already holds', async () => {
+    const { event, run } = bearer('held', 'oauthSession=sealed')
+    await run()
+    expect(verifyToken).not.toHaveBeenCalled()
+    expect(event.context.oauth).toMatchObject({ accessToken: 'held' })
+  })
+
+  // A bad header must not knock out a member who is legitimately signed in.
+  it('falls back to the session cookie when the bearer is rejected', async () => {
+    const { event, run } = bearer('forged', 'oauthSession=sealed')
+    await run()
+    expect(saveToken).not.toHaveBeenCalled()
+    expect(event.context.oauth).toMatchObject({ accessToken: 'held' })
   })
 })
