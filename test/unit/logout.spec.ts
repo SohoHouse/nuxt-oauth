@@ -97,6 +97,18 @@ describe('logout route', () => {
     )
   })
 
+  // A hook that fails halfway must not pick the destination: a half-built
+  // sign-out URL is worse than the plain fallback.
+  it('ignores a redirect set by a hook that then throws', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    onLogout((_event, _url, result) => {
+      result.redirect = 'https://idp.example.com/half-built'
+      throw new Error('failed after setting redirect')
+    })
+
+    expect((await call('?redirect-url=/planner')).location).toBe('/planner')
+  })
+
   it('never redirects to an absolute URL from the query', async () => {
     expect((await call('?redirect-url=https://evil.example.com')).location).toBe(
       '/'

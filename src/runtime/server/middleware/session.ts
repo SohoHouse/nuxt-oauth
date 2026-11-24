@@ -4,6 +4,7 @@ import {
   getOAuthSession,
   isAuthPath,
   isExpired,
+  isTokenVerified,
   logError,
   refreshSession,
   saveToken,
@@ -34,10 +35,23 @@ export default defineEventHandler(async (event) => {
   if (!bearer && !hasSessionCookie) return
 
   try {
-    // A caller-supplied bearer token wins, and is adopted into the session.
+    // A bearer wins only once `oauth:verifyToken` vouches for it; one the
+    // session already holds was verified when it was adopted.
+    let adopted = false
     if (bearer) {
-      await saveToken(event, { access_token: bearer })
+      const held = hasSessionCookie
+        ? (await getOAuthSession(event)).data.accessToken
+        : undefined
+      if (held === bearer) {
+        adopted = true
+      } else if (await isTokenVerified(event, bearer)) {
+        await saveToken(event, { access_token: bearer })
+        adopted = true
+      }
     }
+
+    // A rejected bearer with no session behind it leaves nothing to resolve.
+    if (!adopted && !hasSessionCookie) return
 
     const session = await getOAuthSession(event)
     let { accessToken, expires, user } = session.data

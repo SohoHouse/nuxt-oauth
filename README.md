@@ -97,7 +97,7 @@ The refresh token stays in the sealed cookie and is never sent to the browser. E
 
 ### Server hooks
 
-The app customises the module through server hooks, registered with `useServerHooks()` from `nuxt/server` (not Nitro's `nitroApp.hooks`), typically in a Nitro plugin:
+The app customises the module through server hooks, registered with `useServerHooks()` from `nuxt/server`, typically in a Nitro plugin. On a Nitro v2 build this is the same hook bus as `nitroApp.hooks`, so either works there; `useServerHooks()` is preferred because it also works on other server builders, without importing from Nitro:
 
 ```ts
 // server/plugins/oauth-hooks.ts
@@ -119,6 +119,10 @@ export default defineNitroPlugin(() => {
 
   // Override the OAuth host per request. Set `result.host`.
   hooks.hook('oauth:host', (event, result) => {})
+
+  // Vouch for a bearer token before it is trusted. Without this hook, bearer
+  // tokens are ignored. Set `result.valid` once your API has accepted it.
+  hooks.hook('oauth:verifyToken', async (event, accessToken, result) => {})
 })
 ```
 
@@ -138,7 +142,7 @@ Each is mounted under every `routePrefixes` entry (`/auth/â€¦` and `/api/auth/â€
 
 `redirect-url` must be a path on your own site; anything else becomes `/`. The session middleware does not run for these routes, but does run for every other path, including ones that merely start with `/auth`, such as `/authors`.
 
-A request carrying an `Authorization: Bearer <token>` header has that token adopted into its session without being validated. Do not expose the app to callers you do not trust to send one.
+A request carrying an `Authorization: Bearer <token>` header has that token adopted into its session, but only if an `oauth:verifyToken` hook sets `result.valid = true`. With no handler registered the header is ignored, so a caller cannot sign in with an arbitrary token. A token the session already holds is not verified again, so the hook runs once per new token, not on every request. A throwing hook counts as a rejection.
 
 ### With your tests
 
@@ -147,7 +151,8 @@ Set `oauth.testMode` to `true` to skip authentication: `/auth/login` signs in a 
 ## Upgrading from 3.x
 
 - **Nuxt 4.6+ required**, and the module now imports from `nuxt/server` rather than `h3`.
-- **Register hooks with `useServerHooks()`**, not `useNitroApp().hooks`.
+- **Bearer tokens need `oauth:verifyToken`.** 3.x adopted any `Authorization: Bearer` header into the session unchecked. 4.x ignores the header unless a hook vouches for the token (see above).
+- **Register hooks with `useServerHooks()`** from `nuxt/server`. On Nitro v2 it is the same bus as `useNitroApp().hooks`, so existing registrations keep firing, but it is the portable API and the one the examples use.
 - **`oauth:logout` no longer sends a response.** It receives a third `result` argument; set `result.redirect` instead of calling `sendRedirect`. A 3.x hook that sends its own redirect will fail on 4.x.
 - **Everyone is signed out once.** Sessions are sealed by `nuxt/server`'s `useSession`, whose cookies are not interchangeable with h3's. Use a new `sessionName` so the old cookie is not mistaken for a corrupt one.
 - **Path matching:** the session middleware now skips only whole path segments under `routePrefixes`, so `/authors` gets its session.

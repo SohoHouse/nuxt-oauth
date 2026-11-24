@@ -157,6 +157,29 @@ export const saveToken = async (event: RequestEvent, token: TokenResponse) => {
   return { accessToken: token.access_token, expires, user: result.user }
 }
 
+/**
+ * Whether a caller-supplied bearer token may be adopted into the session.
+ * Denied unless an `oauth:verifyToken` handler sets `result.valid = true`.
+ */
+export const isTokenVerified = async (
+  event: RequestEvent,
+  accessToken: string
+): Promise<boolean> => {
+  const result = { valid: false }
+  try {
+    await useServerHooks().callHook(
+      'oauth:verifyToken',
+      event,
+      accessToken,
+      result
+    )
+  } catch (e) {
+    reportError('oauth:verifyToken hook failed, ignoring bearer token', e, 'warn')
+    return false
+  }
+  return result.valid === true
+}
+
 /** Signs a member in from tokens obtained elsewhere, e.g. account creation. */
 export const setSessionTokens = (
   event: RequestEvent,

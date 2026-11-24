@@ -59,6 +59,17 @@ export default defineNuxtModule<ModuleOptions>({
       options
     )
 
+    // Without this the hook and `event.context.oauth` augmentations in
+    // runtime/types.d.ts never reach the app, and its hook handlers are untyped.
+    // The app and the server are separate TypeScript projects, so both need it.
+    const types = { path: resolver.resolve('./runtime/types.d.ts') }
+    nuxt.hook('prepare:types', ({ references }) => {
+      references.push(types)
+    })
+    nuxt.hook('nitro:prepare:types', ({ references }) => {
+      references.push(types)
+    })
+
     // Extensionless: resolves to *.ts in src/ (dev) or *.js in dist/ (built).
 
     // Populates event.context.oauth for SSR.

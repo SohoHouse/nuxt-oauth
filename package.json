@@ -1,6 +1,6 @@
 {
   "name": "nuxt-oauth",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "OAuth module for your Nuxt 4 applications",
   "repository": "https://github.com/SohoHouse/nuxt-oauth",
   "license": "MIT",
