@@ -35,9 +35,8 @@ export default defineEventHandler(async (event) => {
   if (!bearer && !hasSessionCookie) return
 
   try {
-    // A caller-supplied bearer token wins, but only once an `oauth:verifyToken`
-    // handler has vouched for it: unvalidated, any header would count as signed in.
-    // One already held by this session was verified when it was adopted.
+    // A bearer wins only once `oauth:verifyToken` vouches for it; one the
+    // session already holds was verified when it was adopted.
     let adopted = false
     if (bearer) {
       const held = hasSessionCookie

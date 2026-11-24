@@ -9,11 +9,7 @@ declare module 'nuxt/schema' {
   interface NuxtServerHooks {
     /** Override the OAuth host per-request. Set `result.host` to take effect. */
     'oauth:host': (event: RequestEvent, result: { host: string | null }) => void
-    /**
-     * Vouch for a bearer token sent in an `Authorization` header, by setting
-     * `result.valid = true` once the provider or API has accepted it. Without a
-     * handler, bearer tokens are ignored.
-     */
+    /** Vouch for a bearer token: set `result.valid = true` once it is accepted. */
     'oauth:verifyToken': (
       event: RequestEvent,
       accessToken: string,

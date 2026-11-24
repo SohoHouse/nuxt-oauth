@@ -159,9 +159,7 @@ export const saveToken = async (event: RequestEvent, token: TokenResponse) => {
 
 /**
  * Whether a caller-supplied bearer token may be adopted into the session.
- * Denied unless an `oauth:verifyToken` handler vouches for it: the token is
- * otherwise unvalidated input, and `event.context.oauth` is what the app's
- * own routes treat as proof of sign-in. A throwing handler denies.
+ * Denied unless an `oauth:verifyToken` handler sets `result.valid = true`.
  */
 export const isTokenVerified = async (
   event: RequestEvent,
