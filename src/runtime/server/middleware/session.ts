@@ -1,7 +1,8 @@
-import { defineEventHandler, getRequestHeader } from 'h3'
+import { defineEventHandler, getRequestHeader } from 'nuxt/server'
 import {
   getOAuthOptions,
   getOAuthSession,
+  isAuthPath,
   isExpired,
   logError,
   refreshSession,
@@ -11,17 +12,19 @@ import type { OAuthContext } from '../../../types'
 
 /** Puts the session on `event.context.oauth` so SSR can pass it to the client. */
 export default defineEventHandler(async (event) => {
-  const path = event.path
+  const opts = getOAuthOptions(event)
+  const path = event.url.pathname
+  // The auth routes manage the session themselves; running here too would
+  // refresh a token mid-callback. Follows `routePrefixes`, and matches whole
+  // path segments so an app page such as `/authors` still gets its session.
   if (
     path.startsWith('/_nuxt/') ||
     path.startsWith('/__nuxt_island') ||
-    path.startsWith('/auth') ||
-    path.startsWith('/api/auth')
+    isAuthPath(path, opts.routePrefixes)
   ) {
     return
   }
 
-  const opts = getOAuthOptions(event)
   const bearer = getRequestHeader(event, 'authorization')?.split(' ')[1]
   const hasSessionCookie = (getRequestHeader(event, 'cookie') || '').includes(
     `${opts.sessionName}=`

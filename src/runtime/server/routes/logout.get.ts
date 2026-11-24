@@ -1,6 +1,10 @@
-import { defineEventHandler, getQuery, sendRedirect } from 'h3'
-import { useNitroApp } from '#imports'
-import { getOAuthSession, logError, sanitizeRedirect } from '../utils/oauth'
+import {
+  defineEventHandler,
+  getQuery,
+  sendRedirect,
+  useServerHooks,
+} from 'nuxt/server'
+import { getOAuthSession, reportError, sanitizeRedirect } from '../utils/oauth'
 
 export default defineEventHandler(async (event) => {
   const redirectUrl = sanitizeRedirect(
@@ -10,14 +14,17 @@ export default defineEventHandler(async (event) => {
   const session = await getOAuthSession(event)
   await session.clear()
 
-  // Lets the app sign the member out at the provider too. A handler that sends
-  // its own response ends the request here.
+  // Lets the app sign the member out at the provider too: a handler sets
+  // `result.redirect` to send the member there instead of `redirectUrl`.
+  const result: { redirect: string | null } = { redirect: null }
   try {
-    await useNitroApp().hooks.callHook('oauth:logout', event, redirectUrl)
+    await useServerHooks().callHook('oauth:logout', event, redirectUrl, result)
   } catch (e) {
-    logError(e)
+    // Falls back to `redirectUrl`, which leaves the provider's session alive:
+    // the next login would silently re-authenticate. Make that visible.
+    result.redirect = null
+    reportError('oauth:logout hook failed, skipping provider sign-out', e)
   }
 
-  if (event.handled) return
-  return sendRedirect(event, redirectUrl, 302)
+  return sendRedirect(event, result.redirect ?? redirectUrl, 302)
 })

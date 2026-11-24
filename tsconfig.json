@@ -11,12 +11,11 @@
     "resolveJsonModule": true,
     "types": ["node"],
     "paths": {
-      // `#app` and `#imports` are aliases Nuxt and Nitro create at build time.
+      // `#app` is an alias Nuxt creates at build time.
       // They do not exist on disk, so TypeScript needs pointing at the real
       // declarations or every runtime file reports TS2307.
       "#app": ["./node_modules/nuxt/dist/app/index"],
-      "#app/*": ["./node_modules/nuxt/dist/app/*"],
-      "#imports": ["./node_modules/nitropack/dist/runtime/index"]
+      "#app/*": ["./node_modules/nuxt/dist/app/*"]
     }
   },
   "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],

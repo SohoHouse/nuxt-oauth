@@ -1,4 +1,4 @@
-import { defineEventHandler, setResponseStatus } from 'h3'
+import { defineEventHandler, setResponseStatus } from 'nuxt/server'
 import { refreshSession } from '../utils/oauth'
 
 /** Used by the client to recover from a 401 without a full page redirect. */
