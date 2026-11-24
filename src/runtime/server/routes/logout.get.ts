@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
   } catch (e) {
     // Falls back to `redirectUrl`, which leaves the provider's session alive:
     // the next login would silently re-authenticate. Make that visible.
+    result.redirect = null
     reportError('oauth:logout hook failed, skipping provider sign-out', e)
   }
 
